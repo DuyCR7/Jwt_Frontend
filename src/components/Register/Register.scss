@@ -1,0 +1,38 @@
+.register-container {
+  background-color: #f0f2f5;
+  min-height: 100vh;
+  padding-top: 20px;
+
+  .content-left {
+    margin-top: 50px;
+
+    .brand {
+      text-transform: uppercase;
+      font-size: 30px;
+      color: #1877f2;
+      font-weight: bold;
+    }
+
+    .detail {
+      font-size: 20px;
+    }
+  }
+
+  .right-container {
+    .brand {
+      text-transform: uppercase;
+      font-size: 20px;
+      color: #1877f2;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .content-right {
+      border-radius: 8px;
+      background-color: #ffffff;
+
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+      box-sizing: border-box;
+    }
+  }
+}
