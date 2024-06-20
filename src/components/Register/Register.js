@@ -1,7 +1,8 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./Register.scss";
 import { useHistory } from "react-router-dom";
 import { toast } from 'react-toastify';
+import axios from "axios";
 
 const Register = (props) => {
 
@@ -12,6 +13,14 @@ const Register = (props) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+
+    const defaultValidInput = {
+        isEmail: true,
+        isPhone: true,
+        isPassword: true,
+        isConfirmPassword: true,
+    }
+    const [objCheckInput, setObjCheckInput] = useState(defaultValidInput);
 
     const handleLogin = () => {
         history.push("/login");
@@ -26,18 +35,35 @@ const Register = (props) => {
     };
 
     const isValidInputs = () => {
-        if (!email || !phone || !username || !password) {
-            toast.error("Please enter complete information");
+        setObjCheckInput(defaultValidInput);
+
+        if (!email) {
+            toast.error("Email is required");
+            setObjCheckInput({...defaultValidInput, isEmail: false});
             return false;
         }
 
         if (!validateEmail(email)) {
             toast.error("Please enter valid email");
+            setObjCheckInput({...defaultValidInput, isEmail: false});
+            return false;
+        }
+
+        if (!phone) {
+            toast.error("Phone is required");
+            setObjCheckInput({...defaultValidInput, isPhone: false});
+            return false;
+        }
+
+        if (!password) {
+            toast.error("Password is required");
+            setObjCheckInput({...defaultValidInput, isPassword: false});
             return false;
         }
 
         if (password !== confirmPassword) {
             toast.error("Passwords do not match");
+            setObjCheckInput({...defaultValidInput, isConfirmPassword: false});
             return false;
         }
 
@@ -45,10 +71,18 @@ const Register = (props) => {
     }
 
     const handleRegister = () => {
-        isValidInputs();
-
+        let check = isValidInputs();
+        if (check) {
+            axios.post("http://localhost:8080/api/v1/register", {
+                email, phone, username, password
+            })
+        }
         // toast.success("Register registered");
     }
+
+    useEffect(() => {
+
+    }, []);
 
     return (
         <div className="register-container">
@@ -69,13 +103,13 @@ const Register = (props) => {
                         <div className="content-right d-flex flex-column gap-3 p-3">
                             <div className="form-group">
                                 <label className="form-label">Email:</label>
-                                <input className="form-control" placeholder="Email address" type="text"
+                                <input className={objCheckInput.isEmail ? "form-control" : "form-control is-invalid"} placeholder="Email address" type="text"
                                     value={email} onChange={(e) => setEmail(e.target.value)}/>
                             </div>
 
                             <div className="form-group">
                                 <label className="form-label">Phone number:</label>
-                                <input className="form-control" placeholder="Phone number" type="text"
+                                <input className={objCheckInput.isPhone ? "form-control" : "form-control is-invalid"} placeholder="Phone number" type="text"
                                     value={phone} onChange={(e) => setPhone(e.target.value)}/>
                             </div>
 
@@ -87,13 +121,13 @@ const Register = (props) => {
 
                             <div className="form-group">
                                 <label className="form-label">Password:</label>
-                                <input className="form-control" placeholder="Password" type="password"
+                                <input className={objCheckInput.isPassword ? "form-control" : "form-control is-invalid"} placeholder="Password" type="password"
                                     value={password} onChange={(e) => setPassword(e.target.value)}/>
                             </div>
 
                             <div className="form-group">
                                 <label className="form-label">Confirm password:</label>
-                                <input className="form-control" placeholder="Confirm password" type="password"
+                                <input className={objCheckInput.isConfirmPassword ? "form-control" : "form-control is-invalid"} placeholder="Confirm password" type="password"
                                     value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
                             </div>
 
