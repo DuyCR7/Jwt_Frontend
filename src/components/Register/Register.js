@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import "./Register.scss";
 import { useHistory } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const Register = (props) => {
 
@@ -16,8 +17,37 @@ const Register = (props) => {
         history.push("/login");
     }
 
-    const handleRegister = () => {
+    const validateEmail = (email) => {
+        return String(email)
+            .toLowerCase()
+            .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            );
+    };
 
+    const isValidInputs = () => {
+        if (!email || !phone || !username || !password) {
+            toast.error("Please enter complete information");
+            return false;
+        }
+
+        if (!validateEmail(email)) {
+            toast.error("Please enter valid email");
+            return false;
+        }
+
+        if (password !== confirmPassword) {
+            toast.error("Passwords do not match");
+            return false;
+        }
+
+        return true;
+    }
+
+    const handleRegister = () => {
+        isValidInputs();
+
+        // toast.success("Register registered");
     }
 
     return (
