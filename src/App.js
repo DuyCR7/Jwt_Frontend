@@ -7,7 +7,7 @@ function App() {
   return (
     <Router>
       <div className="app-container">
-        <Nav />
+        {/*<Nav />*/}
         <Switch>
           <Route path="/news">news</Route>
           <Route path="/contact">contact</Route>
