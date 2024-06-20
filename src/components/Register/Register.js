@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./Register.scss";
 import { useHistory } from "react-router-dom";
 import { toast } from 'react-toastify';
-import axios from "axios";
+import { registerNewUser } from "../../services/userService";
 
 const Register = (props) => {
 
@@ -70,14 +70,20 @@ const Register = (props) => {
         return true;
     }
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         let check = isValidInputs();
-        if (check) {
-            axios.post("http://localhost:8080/api/v1/register", {
-                email, phone, username, password
-            })
+        if (check === true) {
+            let res = await registerNewUser(email, phone, username, password);
+            // console.log("Check res: ", res);
+
+            let data = res.data;
+            if(data.EC === 0){
+                toast.success(data.EM);
+                history.push("/login");
+            } else {
+                toast.error(data.EM);
+            }
         }
-        // toast.success("Register registered");
     }
 
     useEffect(() => {
