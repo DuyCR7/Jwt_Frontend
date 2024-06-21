@@ -35,7 +35,20 @@ const Login = (props) => {
 
   const handleLogin = async () => {
     let check = isValidInputs();
-    await loginUser(valueLogin, password);
+    if(check) {
+      let res = await loginUser(valueLogin, password);
+      if (res && res.data && res.data.EC === 0) {
+        let data = {
+          isAuthenticated: true,
+          token: 'fake token'
+        }
+        sessionStorage.setItem("account", JSON.stringify(data));
+        history.push("/users");
+      }
+      if (res && res.data && res.data.EC !== 0) {
+        toast.error(res.data.EM)
+      }
+    }
   }
 
   const handleCreateNewAccount = () => {
