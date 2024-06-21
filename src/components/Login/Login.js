@@ -44,6 +44,8 @@ const Login = (props) => {
         }
         sessionStorage.setItem("account", JSON.stringify(data));
         history.push("/users");
+        window.location.reload();
+        // redux
       }
       if (res && res.data && res.data.EC !== 0) {
         toast.error(res.data.EM)
@@ -53,6 +55,12 @@ const Login = (props) => {
 
   const handleCreateNewAccount = () => {
     history.push("/register");
+  }
+
+  const handlePressEnter = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
   }
 
   return (
@@ -77,13 +85,16 @@ const Login = (props) => {
                   placeholder="Email address or phone number"
                   type="text"
                   value={valueLogin}
-                  onChange={(e) => setValueLogin(e.target.value)}/>
+                  onChange={(e) => setValueLogin(e.target.value)}
+                  onKeyPress={(e) => handlePressEnter(e)}
+              />
               <input
                   className={objCheckInput.isPassword ? "form-control" : "form-control is-invalid"}
                   placeholder="Password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onKeyPress={(e) => handlePressEnter(e)}
               />
               <button className="btn btn-primary" onClick={() => handleLogin()}>Login</button>
               <span className="text-center">
