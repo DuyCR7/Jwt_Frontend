@@ -77,9 +77,10 @@ const Users = (props) => {
                             {listUsers && listUsers.length > 0 ?
                                 <>
                                     {listUsers.map((item, index) => {
+                                        const globalIndex = (currentPage - 1) * LIMIT_USER + index + 1;
                                         return (
                                             <tr key={`row-${index}`}>
-                                                <th scope="row">{index + 1}</th>
+                                                <th scope="row">{globalIndex}</th>
                                                 <td>{item.id}</td>
                                                 <td>{item.email}</td>
                                                 <td>{item.username}</td>
