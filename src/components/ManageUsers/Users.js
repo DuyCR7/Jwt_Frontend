@@ -16,9 +16,15 @@ const Users = (props) => {
     const [isShowModalDelete, setIsShowModalDelete] = useState(false);
     const [dataDelete, setDataDelete] = useState({});
 
+    const [isShowModalUser, setIsShowModalUser] = useState(false);
+
     const handleCloseModalDelete = () => {
         setIsShowModalDelete(false);
         setDataDelete({});
+    }
+
+    const handleCloseModalUser = () => {
+        setIsShowModalUser(false);
     }
 
     useEffect(() => {
@@ -56,7 +62,7 @@ const Users = (props) => {
                             <button className="btn btn-success">
                                 Refresh
                             </button>
-                            <button className="btn btn-primary">
+                            <button className="btn btn-primary" onClick={() => setIsShowModalUser(true)}>
                                 Add new user
                             </button>
                         </div>
@@ -146,6 +152,11 @@ const Users = (props) => {
 
             <ModalUser
                 title={"Create New User"}
+                isShowModalUser={isShowModalUser}
+                handleCloseModalUser={handleCloseModalUser}
+                fetchUsers={fetchUsers}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
             />
         </>
     )
