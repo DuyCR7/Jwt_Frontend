@@ -2,7 +2,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useState, useEffect } from "react";
 import "./Users.scss";
-import { fetchGroup, createUser } from "../../services/userService";
+import {fetchGroup, createUser, updateUser} from "../../services/userService";
 import {toast} from "react-toastify";
 import _ from "lodash";
 
@@ -40,8 +40,9 @@ const ModalUser = (props) => {
     const [objCheckInput, setObjCheckInput] = useState(defaultValidInput);
 
     const isValidInputs = () => {
-        setObjCheckInput(defaultValidInput);
+        if(props.actionModalUser === "UPDATE") return true;
 
+        setObjCheckInput(defaultValidInput);
         let arr = ['email', 'phone', 'password', 'groupId'];
         let check = true;
         for (let i = 0; i < arr.length; i++) {
@@ -58,17 +59,26 @@ const ModalUser = (props) => {
         return check;
     }
 
-    const handleSubmitCreate = async () => {
+    const handleSubmit = async () => {
         let check = isValidInputs();
         if (check) {
-            let res = await createUser(userData);
+            let res = props.actionModalUser === "CREATE" ?
+                await createUser(userData)
+                :
+                await updateUser(userData);
+
             if (res.data && res.data.EC === 0) {
                 props.handleCloseModalUser();
                 setUserData({...defaultUserData, groupId: userGroup[0].id});
                 toast.success(res.data.EM);
 
-                props.setCurrentPage(1);
-                await props.fetchUsers(1);
+                if(props.actionModalUser === "CREATE"){
+                    props.setCurrentPage(1);
+                    await props.fetchUsers(1);
+                } else {
+                    await props.fetchUsers(props.currentPage);
+                }
+
             } else {
                 toast.error(res.data.EM);
 
@@ -193,7 +203,7 @@ const ModalUser = (props) => {
                     <Button variant="secondary" onClick={() => handleClickCloseModal()}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={() => handleSubmitCreate()}>
+                    <Button variant="primary" onClick={() => handleSubmit()}>
                         Save
                     </Button>
                 </Modal.Footer>
