@@ -37,9 +37,10 @@ const Users = (props) => {
 
     const fetchUsers = async (currentPage) => {
         let res = await fetchAllUsers(currentPage, LIMIT_USER);
-        if (res && res.data && res.data.EC === 0) {
-            setTotalPage(res.data.DT.totalPages);
-            setListUsers(res.data.DT.users);
+        // console.log(res);
+        if (res && res.EC === 0) {
+            setTotalPage(res.DT.totalPages);
+            setListUsers(res.DT.users);
         }
     }
 

@@ -76,12 +76,11 @@ const Register = (props) => {
             let res = await registerNewUser(email, phone, username, password);
             // console.log("Check res: ", res);
 
-            let data = res.data;
-            if(data.EC === 0){
-                toast.success(data.EM);
+            if(res.EC === 0){
+                toast.success(res.EM);
                 history.push("/login");
             } else {
-                toast.error(data.EM);
+                toast.error(res.EM);
             }
         }
     }

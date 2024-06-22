@@ -7,14 +7,14 @@ const ModalDelete = (props) => {
 
     const confirmDeleteUser = async () => {
         let res = await deleteUser(props.dataDelete);
-        if (res && res.data.EC === 0) {
-            toast.success(res.data.EM)
+        if (res && res.EC === 0) {
+            toast.success(res.EM)
             props.handleCloseModalDelete();
 
             props.setCurrentPage(1);
             await props.fetchUsers(1);
         } else {
-            toast.error(res.data.EM);
+            toast.error(res.EM);
         }
     }
 
