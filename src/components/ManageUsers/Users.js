@@ -17,6 +17,9 @@ const Users = (props) => {
     const [dataDelete, setDataDelete] = useState({});
 
     const [isShowModalUser, setIsShowModalUser] = useState(false);
+    const [dataUpdate, setDataUpdate] = useState({});
+
+    const [actionModalUser, setActionModalUser] = useState("CREATE");
 
     const handleCloseModalDelete = () => {
         setIsShowModalDelete(false);
@@ -25,6 +28,7 @@ const Users = (props) => {
 
     const handleCloseModalUser = () => {
         setIsShowModalUser(false);
+        setDataUpdate({});
     }
 
     useEffect(() => {
@@ -50,6 +54,12 @@ const Users = (props) => {
         setDataDelete(user);
     }
 
+    const handleEditUser = async (user) => {
+        setActionModalUser("UPDATE")
+        setIsShowModalUser(true);
+        setDataUpdate(user);
+    }
+
     return (
         <>
             <div className="container">
@@ -62,7 +72,11 @@ const Users = (props) => {
                             <button className="btn btn-success">
                                 Refresh
                             </button>
-                            <button className="btn btn-primary" onClick={() => setIsShowModalUser(true)}>
+                            <button className="btn btn-primary"
+                                    onClick={() => {
+                                        setIsShowModalUser(true);
+                                        setActionModalUser("CREATE");
+                                    }}>
                                 Add new user
                             </button>
                         </div>
@@ -93,7 +107,8 @@ const Users = (props) => {
                                                 <td>{item.username}</td>
                                                 <td>{item.Group ? item.Group.name : ""}</td>
                                                 <td>
-                                                    <button className="btn btn-warning me-3">Edit</button>
+                                                    <button className="btn btn-warning me-3"
+                                                            onClick={() => handleEditUser(item)}>Edit</button>
                                                     <button className="btn btn-danger"
                                                             onClick={() => handleDeleteUser(item)}>Delete
                                                     </button>
@@ -151,12 +166,13 @@ const Users = (props) => {
             />
 
             <ModalUser
-                title={"Create New User"}
                 isShowModalUser={isShowModalUser}
                 handleCloseModalUser={handleCloseModalUser}
                 fetchUsers={fetchUsers}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
+                actionModalUser={actionModalUser}
+                dataUpdate={dataUpdate}
             />
         </>
     )
