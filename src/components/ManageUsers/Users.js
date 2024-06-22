@@ -60,23 +60,33 @@ const Users = (props) => {
         setDataUpdate(user);
     }
 
+    const handleRefresh = async () => {
+        setCurrentPage(1);
+        await fetchUsers(1);
+    }
+
     return (
         <>
             <div className="container">
                 <div className="manage-users-container">
                     <div className="user-header">
-                        <div className="title">
-                            <h3>Table Users</h3>
+                        <div className="title mt-3">
+                            <h3>Manage Users</h3>
                         </div>
-                        <div className="action">
-                            <button className="btn btn-success">
+                        <div className="action my-3">
+                            <button className="btn btn-success me-3"
+                                    title="Refresh"
+                                    onClick={() => handleRefresh()}>
+                                <i className="fa fa-refresh me-2"></i>
                                 Refresh
                             </button>
                             <button className="btn btn-primary"
+                                    title="Add new user"
                                     onClick={() => {
                                         setIsShowModalUser(true);
                                         setActionModalUser("CREATE");
                                     }}>
+                                <i className="fa fa-plus-circle me-2"></i>
                                 Add new user
                             </button>
                         </div>
@@ -107,10 +117,15 @@ const Users = (props) => {
                                                 <td>{item.username}</td>
                                                 <td>{item.Group ? item.Group.name : ""}</td>
                                                 <td>
-                                                    <button className="btn btn-warning me-3"
-                                                            onClick={() => handleEditUser(item)}>Edit</button>
-                                                    <button className="btn btn-danger"
-                                                            onClick={() => handleDeleteUser(item)}>Delete
+                                                    <button className="btn btn-sm btn-warning me-3"
+                                                            onClick={() => handleEditUser(item)}
+                                                            title="Edit">
+                                                            <i className="fa fa-pencil-square-o"></i>
+                                                    </button>
+                                                    <button className="btn btn-sm btn-danger"
+                                                            onClick={() => handleDeleteUser(item)}
+                                                            title="Delete">
+                                                            <i className="fa fa-trash"></i>
                                                     </button>
                                                 </td>
                                             </tr>

@@ -96,7 +96,7 @@ const ModalUser = (props) => {
     useEffect(() => {
         if(props.actionModalUser === "UPDATE"){
             // console.log(props.dataUpdate);
-            setUserData({...props.dataUpdate, groupId: props.dataUpdate.Group ? props.dataUpdate.Group.id : ''});
+            setUserData({...props.dataUpdate, groupId: props.dataUpdate.Group ? props.dataUpdate.Group.id : userGroup[0].id});
         }
     }, [props.dataUpdate]);
 
