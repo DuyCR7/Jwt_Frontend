@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {fetchAllUsers} from "../../services/userService";
 import ReactPaginate from 'react-paginate';
 import ModalDelete from "./ModalDelete";
+import ModalUser from "./ModalUser";
 
 const Users = (props) => {
 
@@ -141,6 +142,10 @@ const Users = (props) => {
                 fetchUsers={fetchUsers}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
+            />
+
+            <ModalUser
+                title={"Create New User"}
             />
         </>
     )
