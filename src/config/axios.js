@@ -5,6 +5,9 @@ const instance = axios.create({
     baseURL: 'http://localhost:8080'
 });
 
+// các request gửi lên server sẽ đính kèm cookie vào
+instance.defaults.withCredentials = true;
+
 // Alter defaults after instance has been created
 // instance.defaults.headers.common['Authorization'] = "AUTH_TOKEN";
 
