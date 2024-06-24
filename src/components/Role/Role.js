@@ -2,29 +2,34 @@ import "./Role.scss";
 import {useState} from "react";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
+import {toast} from "react-toastify";
+import {createRoles} from "../../services/roleService";
 
 const Role = (props) => {
 
+    const dataChildDefault = {
+        url: '',
+        description: '',
+        isValidUrl: true
+    }
     const [listChild, setListChild] = useState({
-        child_1: {
-            url: '',
-            description: ''
-        }
+        child_1: dataChildDefault
     });
 
     const handleOnchangeInput = (name, value, key) => {
         let _listChild = _.cloneDeep(listChild);
-
         _listChild[key][name] = value;
+
+        if(value && name === 'url'){
+            _listChild[key].isValidUrl = true;
+        }
+
         setListChild(_listChild);
     }
 
     const handleAddNewInput = () => {
         let _listChild = _.cloneDeep(listChild);
-        _listChild[`child_${uuidv4()}`] = {
-            url: '',
-            description: ''
-        };
+        _listChild[`child_${uuidv4()}`] = dataChildDefault;
         setListChild(_listChild);
     }
 
@@ -33,6 +38,49 @@ const Role = (props) => {
         delete _listChild[key];
         setListChild(_listChild);
     }
+
+    const buildDataToPersist = () => {
+        let _listChild = _.cloneDeep(listChild);
+        let result = [];
+        Object.entries(listChild).find(([key, child], index) => {
+            result.push({
+                url: child.url,
+                description: child.description,
+            })
+        })
+        return result;
+    }
+
+    const handleSave = async () => {
+
+        let inValidObj = Object.entries(listChild).find(([key, child], index) => {
+            return child && !child.url;
+        })
+
+        if(!inValidObj){
+            // call api
+            let data = buildDataToPersist();
+            let res = await createRoles(data);
+            // console.log("Check res: ", res);
+            if(res && res.EC === 0){
+                setListChild({child_1: dataChildDefault});
+                toast.success(res.EM);
+            } else {
+                toast.error(res.EM);
+            }
+            // console.log("Check data build: ", data);
+        } else {
+            // console.log(inValidObj);
+            toast.error("Please enter URL!");
+            let _listChild = _.cloneDeep(listChild);
+
+            const key = inValidObj[0];
+            _listChild[key]['isValidUrl'] = false;
+            setListChild(_listChild);
+        }
+    }
+
+    // console.log(listChild);
 
     return (
         <>
@@ -49,7 +97,7 @@ const Role = (props) => {
                                             <div className="row role-child" key={`child-${key}`}>
                                                 <div className={`col-5 form-group ${key}`}>
                                                     <label>URL:</label>
-                                                    <input type="text" className="form-control" value={child.url}
+                                                    <input type="text" className={child.isValidUrl ? "form-control" : "form-control is-invalid"} value={child.url}
                                                             onChange={(e) => handleOnchangeInput("url", e.target.value, key)}/>
                                                 </div>
                                                 <div className="col-5 form-group">
@@ -72,7 +120,7 @@ const Role = (props) => {
                                 })
                             }
                             <div>
-                                <button className="btn btn-success mt-3">Save</button>
+                                <button className="btn btn-success mt-3" onClick={() => handleSave()}>Save</button>
                             </div>
                         </div>
                     </div>
