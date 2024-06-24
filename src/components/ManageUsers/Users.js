@@ -7,7 +7,7 @@ import ModalUser from "./ModalUser";
 
 const Users = (props) => {
 
-    const LIMIT_USER = 2;
+    const LIMIT_USER = 4;
 
     const [listUsers, setListUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
