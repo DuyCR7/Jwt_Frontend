@@ -1,12 +1,12 @@
 import React, {useContext, useEffect, useState} from "react";
 import "./Login.scss";
-import { useHistory } from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import { toast } from 'react-toastify';
 import { loginUser } from "../../services/userService";
 import {UserContext} from "../../context/UserContext";
 
 const Login = (props) => {
-  const { loginContext } = useContext(UserContext);
+  const { user, loginContext } = useContext(UserContext);
 
   const history = useHistory();
 
@@ -76,13 +76,19 @@ const Login = (props) => {
     }
   }
 
+  useEffect(() => {
+      if (user && user.isAuthenticated) {
+        history.push("/");
+      }
+  }, []);
+
   return (
     <div className="login-container">
       <div className="container">
         <div className="row px-3 px-sm-0">
           <div className="content-left col-12 d-none col-sm-7 d-sm-block">
             <div className="brand">
-              Vu Duc Duy
+              <Link to={"/"} style={{textDecoration: 'none'}}> <span title={"Return to HomePage"}>Vu Duc Duy</span></Link>
             </div>
             <div className="detail">
               Cristiano Ronaldo is the greatest off all times

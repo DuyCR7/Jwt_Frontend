@@ -25,7 +25,7 @@ const GroupRole = (props) => {
                 setUserGroup(res.DT);
             }
         } else {
-            toast.error(res.EM);
+            // toast.error(res.EM);
         }
     }
 

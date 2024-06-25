@@ -117,7 +117,7 @@ const ModalUser = (props) => {
                 setUserData({...userData, groupId: groups[0].id});
             }
         } else {
-            toast.error(res.EM);
+            // toast.error(res.EM);
         }
     }
 

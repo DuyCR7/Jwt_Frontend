@@ -33,13 +33,18 @@ instance.interceptors.response.use(function (response) {
     switch (status) {
         // authentication (token related issues)
         case 401: {
-            toast.error("Unauthorized! Please login!");
+            if(window.location.pathname !== '/'
+            && window.location.pathname !== '/login'
+            && window.location.pathname !== '/register') {
+                // toast.error("Unauthorized! Please login!");
+                window.location.href = "/login";
+            }
             return error.response.data;
         }
 
         // forbidden (permission related issues)
         case 403: {
-            toast.error("You don't permission to access!");
+            // toast.error("You don't permission to access!");
             return error.response.data;
         }
 

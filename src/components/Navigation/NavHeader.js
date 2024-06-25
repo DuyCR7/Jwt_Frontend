@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import "./NavHeader.scss";
 import {Link, NavLink, useHistory, useLocation} from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
@@ -30,6 +30,10 @@ const NavHeader = (props) => {
     const handleLinkClick = () => {
         setNavbarExpanded(false);
     }
+
+    useEffect(() => {
+        setNavbarExpanded(false);
+    }, [user]);
 
     if(user && user.isAuthenticated === true || location.pathname === "/") {
         return (
