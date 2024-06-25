@@ -12,6 +12,8 @@ instance.defaults.withCredentials = true;
 // Alter defaults after instance has been created
 instance.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("jwt")}`;
 
+let hasShown403Error = false;
+
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
     // Do something before request is sent
@@ -45,6 +47,15 @@ instance.interceptors.response.use(function (response) {
         // forbidden (permission related issues)
         case 403: {
             // toast.error("You don't permission to access!");
+            // return error.response.data;
+            if (!hasShown403Error) {
+                toast.error("You don't have permission to access!");
+                hasShown403Error = true;
+                // Reset the flag after some time (e.g., 5 seconds)
+                setTimeout(() => {
+                    hasShown403Error = false;
+                }, 100);
+            }
             return error.response.data;
         }
 

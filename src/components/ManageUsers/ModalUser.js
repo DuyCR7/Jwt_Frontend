@@ -128,7 +128,7 @@ const ModalUser = (props) => {
 
     return (
         <>
-            <Modal show={props.isShowModalUser} onHide={() => handleClickCloseModal()} size={"lg"} className="modal-user">
+            <Modal show={props.isShowModalUser} onHide={() => handleClickCloseModal()} size={"lg"} className="modal-user" centered>
                 <Modal.Header closeButton>
                     <Modal.Title>
                         <span>

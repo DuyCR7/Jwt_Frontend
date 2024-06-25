@@ -72,7 +72,7 @@ const ModalRole = (props) => {
 
     return (
         <>
-            <Modal show={props.isShowModalUpdate} onHide={() => handleClickCloseModal()} size={"lg"}>
+            <Modal show={props.isShowModalUpdate} onHide={() => handleClickCloseModal()} size={"lg"} className="modal-role" centered>
                 <Modal.Header closeButton>
                     <Modal.Title>
                         <span>

@@ -117,7 +117,7 @@ const GroupRole = (props) => {
                     <h4>Group Role</h4>
                 </div>
                 <div className="assign-group-role mt-3">
-                    <div className="col-12 col-sm-6 form-group">
+                    <div className="col-12 form-group">
                         <label>Select Group (<span className="red">*</span>):</label>
                         <select className="form-select mt-3" onChange={(e) => handleOnChangeGroup(e.target.value)}>
                             <option value="">--- Please select group ---</option>

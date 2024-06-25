@@ -81,7 +81,7 @@ const Users = (props) => {
                                 <i className="fa fa-refresh me-2"></i>
                                 Refresh
                             </button>
-                            <button className="btn btn-primary"
+                            <button className="btn btn-primary float-end"
                                     title="Add new user"
                                     onClick={() => {
                                         setIsShowModalUser(true);
@@ -94,9 +94,10 @@ const Users = (props) => {
                     </div>
 
                     <div className="user-body">
-                        <table className="table table-bordered table-hover">
+                        <div className="table-responsive">
+                            <table className="table table-bordered table-hover">
                             <thead>
-                            <tr>
+                            <tr className="text-center">
                                 <th scope="col">No</th>
                                 <th scope="col">Id</th>
                                 <th scope="col">Email</th>
@@ -111,23 +112,25 @@ const Users = (props) => {
                                     {listUsers.map((item, index) => {
                                         const globalIndex = (currentPage - 1) * LIMIT_USER + index + 1;
                                         return (
-                                            <tr key={`row-${index}`}>
+                                            <tr className="text-center" key={`row-${index}`}>
                                                 <th scope="row">{globalIndex}</th>
                                                 <td>{item.id}</td>
                                                 <td>{item.email}</td>
                                                 <td>{item.username}</td>
                                                 <td>{item.Group ? item.Group.name : ""}</td>
                                                 <td>
-                                                    <button className="btn btn-sm btn-warning me-3"
-                                                            onClick={() => handleEditUser(item)}
-                                                            title="Edit">
+                                                    <div className="d-flex justify-content-center">
+                                                        <button className="btn btn-sm btn-warning me-2"
+                                                                onClick={() => handleEditUser(item)}
+                                                                title="Edit">
                                                             <i className="fa fa-pencil-square-o"></i>
-                                                    </button>
-                                                    <button className="btn btn-sm btn-danger"
-                                                            onClick={() => handleDeleteUser(item)}
-                                                            title="Delete">
+                                                        </button>
+                                                        <button className="btn btn-sm btn-danger"
+                                                                onClick={() => handleDeleteUser(item)}
+                                                                title="Delete">
                                                             <i className="fa fa-trash"></i>
-                                                    </button>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         )
@@ -141,32 +144,35 @@ const Users = (props) => {
                                 </>
                             }
                             </tbody>
-                        </table>
+                            </table>
+                        </div>
                     </div>
 
                     {totalPage > 0 &&
-                        <div className="user-footer">
-                            <ReactPaginate
-                                nextLabel="Next"
-                                onPageChange={handlePageClick}
-                                pageRangeDisplayed={3}
-                                marginPagesDisplayed={2}
-                                pageCount={totalPage}
-                                previousLabel="Prev"
-                                pageClassName="page-item"
-                                pageLinkClassName="page-link"
-                                previousClassName="page-item"
-                                previousLinkClassName="page-link"
-                                nextClassName="page-item"
-                                nextLinkClassName="page-link"
-                                breakLabel="..."
-                                breakClassName="page-item"
-                                breakLinkClassName="page-link"
-                                containerClassName="pagination"
-                                activeClassName="active"
-                                renderOnZeroPageCount={null}
-                                forcePage={currentPage - 1}
-                            />
+                        <div className="user-footer row justify-content-center">
+                            <div className="col-auto">
+                                <ReactPaginate
+                                    nextLabel="Next"
+                                    onPageChange={handlePageClick}
+                                    pageRangeDisplayed={3}
+                                    marginPagesDisplayed={2}
+                                    pageCount={totalPage}
+                                    previousLabel="Prev"
+                                    pageClassName="page-item"
+                                    pageLinkClassName="page-link"
+                                    previousClassName="page-item"
+                                    previousLinkClassName="page-link"
+                                    nextClassName="page-item"
+                                    nextLinkClassName="page-link"
+                                    breakLabel="..."
+                                    breakClassName="page-item"
+                                    breakLinkClassName="page-link"
+                                    containerClassName="pagination"
+                                    activeClassName="active"
+                                    renderOnZeroPageCount={null}
+                                    forcePage={currentPage - 1}
+                                />
+                            </div>
                         </div>
                     }
                 </div>

@@ -83,7 +83,7 @@ const Login = (props) => {
   }, []);
 
   return (
-    <div className="login-container">
+    <div className="login-container d-flex justify-content-center align-items-center">
       <div className="container">
         <div className="row px-3 px-sm-0">
           <div className="content-left col-12 d-none col-sm-7 d-sm-block">

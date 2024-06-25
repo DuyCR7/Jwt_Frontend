@@ -94,23 +94,24 @@ const Role = (props) => {
                         <div className="title">
                             <h4>Add a new role</h4>
                         </div>
+                        <hr/>
                         <div className="role-parent">
                             {
                                 Object.entries(listChild).map(([key, child], index) => {
                                     return (
                                             <div className="row role-child" key={`child-${key}`}>
-                                                <div className={`col-5 form-group ${key}`}>
+                                                <div className={`col-sm-6 col-12 form-group ${key}`}>
                                                     <label>URL:</label>
                                                     <input type="text" className={child.isValidUrl ? "form-control" : "form-control is-invalid"} value={child.url}
                                                             onChange={(e) => handleOnchangeInput("url", e.target.value, key)}/>
                                                 </div>
-                                                <div className="col-5 form-group">
+                                                <div className="col-sm-6 col-12 form-group">
                                                     <label>Description:</label>
                                                     <input type="text" className="form-control" value={child.description}
                                                             onChange={(e) => handleOnchangeInput("description", e.target.value, key)}/>
                                                 </div>
-                                                <div className="col-2 mt-4">
-                                                    <button className="btn btn-primary me-3" onClick={() => handleAddNewInput()}>
+                                                <div className="col-sm-12 col-12 mt-4 text-end">
+                                                    <button className={index >= 1 ? "btn btn-primary mx-2" : "btn btn-primary"} onClick={() => handleAddNewInput()}>
                                                         <i className="fa fa-plus-circle"></i>
                                                     </button>
                                                     {index >= 1 &&
@@ -123,7 +124,7 @@ const Role = (props) => {
                                     )
                                 })
                             }
-                            <div>
+                            <div className="text-center text-sm-end">
                                 <button className="btn btn-success mt-3" onClick={() => handleSave()}>Save</button>
                             </div>
                         </div>

@@ -61,76 +61,82 @@ const TableRole = forwardRef((props, ref) => {
 
     return (
         <>
-            <table className="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Id</th>
-                    <th scope="col">URL</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {listRoles && listRoles.length > 0 ?
-                    <>
-                        {listRoles.map((item, index) => {
-                            const globalIndex = (currentPage - 1) * LIMIT_ROLE + index + 1;
-                            return (
-                                <tr key={`row-${index}`}>
-                                    <th scope="row">{globalIndex}</th>
-                                    <td>{item.id}</td>
-                                    <td>{item.url}</td>
-                                    <td>{item.description}</td>
-                                    <td>
-                                        <button className="btn btn-sm btn-warning me-3"
-                                                onClick={() => handleEditRole(item)}
-                                                title="Edit">
-                                            <i className="fa fa-pencil-square-o"></i>
-                                        </button>
-                                        <button className="btn btn-sm btn-danger"
-                                                onClick={() => handleDeleteRole(item)}
-                                                title="Delete">
-                                            <i className="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                    </>
-                    :
-                    <>
-                        <tr>
-                            <td colSpan={5}>Not found roles!</td>
-                        </tr>
-                    </>
-                }
-                </tbody>
-            </table>
+            <div className="table-responsive">
+                <table className="table table-bordered table-hover">
+                    <thead>
+                    <tr className="text-center">
+                        <th scope="col">No</th>
+                        <th scope="col">Id</th>
+                        <th scope="col">URL</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {listRoles && listRoles.length > 0 ?
+                        <>
+                            {listRoles.map((item, index) => {
+                                const globalIndex = (currentPage - 1) * LIMIT_ROLE + index + 1;
+                                return (
+                                    <tr className="text-center" key={`row-${index}`}>
+                                        <th scope="row">{globalIndex}</th>
+                                        <td>{item.id}</td>
+                                        <td>{item.url}</td>
+                                        <td>{item.description}</td>
+                                        <td>
+                                            <div className="d-flex justify-content-center">
+                                                <button className="btn btn-sm btn-warning me-3"
+                                                        onClick={() => handleEditRole(item)}
+                                                        title="Edit">
+                                                    <i className="fa fa-pencil-square-o"></i>
+                                                </button>
+                                                <button className="btn btn-sm btn-danger"
+                                                        onClick={() => handleDeleteRole(item)}
+                                                        title="Delete">
+                                                    <i className="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </>
+                        :
+                        <>
+                            <tr>
+                                <td colSpan={5}>Not found roles!</td>
+                            </tr>
+                        </>
+                    }
+                    </tbody>
+                </table>
+            </div>
 
             {totalPage > 0 &&
-                <div className="user-footer">
-                    <ReactPaginate
-                        nextLabel="Next"
-                        onPageChange={handlePageClick}
-                        pageRangeDisplayed={3}
-                        marginPagesDisplayed={2}
-                        pageCount={totalPage}
-                        previousLabel="Prev"
-                        pageClassName="page-item"
-                        pageLinkClassName="page-link"
-                        previousClassName="page-item"
-                        previousLinkClassName="page-link"
-                        nextClassName="page-item"
-                        nextLinkClassName="page-link"
-                        breakLabel="..."
-                        breakClassName="page-item"
-                        breakLinkClassName="page-link"
-                        containerClassName="pagination"
-                        activeClassName="active"
-                        renderOnZeroPageCount={null}
-                        forcePage={currentPage - 1}
-                    />
+                <div className="user-footer row justify-content-center">
+                    <div className="col-auto">
+                        <ReactPaginate
+                            nextLabel="Next"
+                            onPageChange={handlePageClick}
+                            pageRangeDisplayed={3}
+                            marginPagesDisplayed={2}
+                            pageCount={totalPage}
+                            previousLabel="Prev"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link"
+                            breakLabel="..."
+                            breakClassName="page-item"
+                            breakLinkClassName="page-link"
+                            containerClassName="pagination"
+                            activeClassName="active"
+                            renderOnZeroPageCount={null}
+                            forcePage={currentPage - 1}
+                        />
+                    </div>
                 </div>
             }
 

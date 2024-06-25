@@ -20,7 +20,7 @@ const ModalDelete = (props) => {
 
     return (
         <>
-            <Modal show={props.isShowModalDelete} onHide={props.handleCloseModalDelete}>
+            <Modal show={props.isShowModalDelete} onHide={props.handleCloseModalDelete} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Delete User</Modal.Title>
                 </Modal.Header>
