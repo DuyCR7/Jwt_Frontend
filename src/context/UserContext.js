@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { getUserAccount } from "../services/userService";
+import { getUserAccount, getUserById } from "../services/userService";
 
 const UserContext = React.createContext(null)
 
@@ -28,8 +28,16 @@ const UserProvider = ({ children }) => {
         if (res && res.EC === 0) {
             let groupWithRoles = res.DT.groupWithRoles;
             let email = res.DT.email;
-            let username = res.DT.username;
+            // let username = res.DT.username;
+            let username = "";
             let token = res.DT.access_token;
+            let id = res.DT.id;
+            let userFetch = await getUserById(id);
+            if (userFetch && userFetch.EC === 0){
+                username = userFetch.DT.username;
+            } else {
+                username = res.DT.username;
+            }
 
             let data = {
                 isAuthenticated: true,

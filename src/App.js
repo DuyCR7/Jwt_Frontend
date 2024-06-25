@@ -11,11 +11,20 @@ import { Scrollbars } from 'react-custom-scrollbars-2';
 
 function App() {
     const { user } = useContext(UserContext);
-    const [scrollHeight, setScrollHeight] = useState(0);
+    const [scrollHeight, setScrollHeight] = useState(window.innerHeight);
 
     useEffect(() => {
-        let windowHeight = window.innerHeight;
-        setScrollHeight(windowHeight);
+        const handleResize = () => {
+            setScrollHeight(window.innerHeight);
+        };
+
+        // Add event listener for window resize
+        window.addEventListener('resize', handleResize);
+
+        // Clean up the event listener on component unmount
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
     }, [user]);
 
   return (

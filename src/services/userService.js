@@ -41,6 +41,10 @@ const logoutUser = () => {
     return axios.post("/api/v1/logout");
 }
 
+const getUserById = (id) => {
+    return axios.get(`/api/v1/user/get-by-id/${id}`);
+}
+
 export {
     registerNewUser,
     loginUser,
@@ -50,5 +54,6 @@ export {
     createUser,
     updateUser,
     getUserAccount,
-    logoutUser
+    logoutUser,
+    getUserById
 }
