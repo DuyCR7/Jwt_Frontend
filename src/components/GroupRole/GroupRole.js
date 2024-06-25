@@ -1,7 +1,7 @@
 import "./GroupRole.scss";
 import {useEffect, useState} from "react";
 import {fetchGroup} from "../../services/userService";
-import { getAllRoles, getRolesByGroup } from "../../services/roleService";
+import { getAllRoles, getRolesByGroup, assignRolesToGroup } from "../../services/roleService";
 import {toast} from "react-toastify";
 import _ from "lodash";
 
@@ -82,6 +82,34 @@ const GroupRole = (props) => {
         setAssignedRolesByGroup(_assignedRolesByGroup);
     }
 
+    const buildDataToSave = () => {
+        // data = {groupId, groupRoles: [{}, {} ]}
+        let _assignedRolesByGroup = _.cloneDeep(assignedRolesByGroup);
+        let result = {};
+
+        result.groupId = selectedGroup;
+
+        let groupRolesFilter = _assignedRolesByGroup.filter(item => item.isAssigned === true);
+        let finalGroupRoles = groupRolesFilter.map(item => {
+            let itemFilter = {groupId: +selectedGroup, roleId: +item.id};
+            return itemFilter;
+        })
+        result.groupRoles = finalGroupRoles;
+        return result;
+    }
+
+    const handleSaveAssign = async () => {
+        let data = buildDataToSave();
+        // console.log("Check raw data", assignedRolesByGroup);
+        // console.log("Check data build: ", data);
+        let res = await assignRolesToGroup(data);
+        if(res && res.EC === 0){
+            toast.success(res.EM);
+        } else {
+            toast.error(res.EM);
+        }
+    }
+
     return (
         <div className="group-role-container">
             <div className="container">
@@ -124,7 +152,7 @@ const GroupRole = (props) => {
                             })
                         }
                         <div className="mt-3">
-                            <button className="btn btn-warning">Save</button>
+                            <button className="btn btn-warning" onClick={() => handleSaveAssign()}>Save</button>
                         </div>
                     </div>
                     }

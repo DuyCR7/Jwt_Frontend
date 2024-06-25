@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, {useContext, useState} from "react";
 import "./NavHeader.scss";
 import {Link, NavLink, useHistory, useLocation} from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
@@ -26,24 +26,29 @@ const NavHeader = (props) => {
         }
     }
 
+    const [navbarExpanded, setNavbarExpanded] = useState(false);
+    const handleLinkClick = () => {
+        setNavbarExpanded(false);
+    }
+
     if(user && user.isAuthenticated === true || location.pathname === "/") {
         return (
             <>
                 <div className="topnav">
                     <div className="nav-header">
-                        <Navbar expand="lg" bg="header" className="bg-body-tertiary">
+                        <Navbar expand="lg" bg="header" className="bg-body-tertiary" expanded={navbarExpanded} onToggle={() => setNavbarExpanded(!navbarExpanded)}>
                             <Container>
-                                <NavLink to="/" exact className="navbar-brand">Home</NavLink>
+                                <NavLink to="/" exact className="navbar-brand" onClick={handleLinkClick}>Home</NavLink>
                                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                                 <Navbar.Collapse id="basic-navbar-nav">
                                     <Nav className="me-auto">
                                         {user && user.isAuthenticated === true &&
                                             <>
-                                                <NavLink to="/users" className="nav-link">Users</NavLink>
-                                                <NavLink to="/roles" className="nav-link">Roles</NavLink>
-                                                <NavLink to="/group-role" className="nav-link">Group-Role</NavLink>
-                                                <NavLink to="/projects" className="nav-link">Projects</NavLink>
-                                                <NavLink to="/about" className="nav-link">About</NavLink>
+                                                <NavLink to="/users" className="nav-link" onClick={handleLinkClick}>Users</NavLink>
+                                                <NavLink to="/roles" className="nav-link" onClick={handleLinkClick}>Roles</NavLink>
+                                                <NavLink to="/group-role" className="nav-link" onClick={handleLinkClick}>Group-Role</NavLink>
+                                                <NavLink to="/projects" className="nav-link" onClick={handleLinkClick}>Projects</NavLink>
+                                                <NavLink to="/about" className="nav-link" onClick={handleLinkClick}>About</NavLink>
                                             </>
                                         }
                                     </Nav>
@@ -54,7 +59,7 @@ const NavHeader = (props) => {
                                                     Welcome <b>{user.account.username}!</b>
                                                 </Nav.Item>
                                                 <NavDropdown title="Settings" id="basic-nav-dropdown">
-                                                    <NavDropdown.Item>Change Password</NavDropdown.Item>
+                                                    <NavDropdown.Item onClick={handleLinkClick}>Change Password</NavDropdown.Item>
                                                     <NavDropdown.Divider />
                                                     <NavDropdown.Item onClick={() => handleLogout()}>
                                                         Log out
