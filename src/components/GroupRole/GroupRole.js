@@ -145,7 +145,7 @@ const GroupRole = (props) => {
                                                onChange={(e) => handleSelectRole(e.target.value)}
                                         />
                                         <label className="form-check-label" htmlFor={`list-role-${index}`}>
-                                            {item.url}
+                                            {item.url} - <i style={{ color: 'green' }}>({item.description})</i>
                                         </label>
                                     </div>
                                 )

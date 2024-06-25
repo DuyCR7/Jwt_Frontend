@@ -46,8 +46,9 @@ instance.interceptors.response.use(function (response) {
 
         // forbidden (permission related issues)
         case 403: {
-            // toast.error("You don't permission to access!");
+            // toast.error("You don't have permission to access!");
             // return error.response.data;
+
             if (!hasShown403Error) {
                 toast.error("You don't have permission to access!");
                 hasShown403Error = true;
@@ -56,7 +57,7 @@ instance.interceptors.response.use(function (response) {
                     hasShown403Error = false;
                 }, 100);
             }
-            return error.response.data;
+            return Promise.resolve({ error: "Forbidden" });
         }
 
         // bad request
