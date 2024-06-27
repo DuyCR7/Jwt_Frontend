@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
+// import { refreshToken } from "../services/userService";
 
 // Set config defaults when creating the instance
 const instance = axios.create({
@@ -13,10 +15,75 @@ instance.defaults.withCredentials = true;
 instance.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("jwt")}`;
 
 let hasShown403Error = false;
+let isRefreshing = false;
+let refreshSubscribers = [];
+
+// Hàm để đăng ký các yêu cầu cần được làm mới token
+const subscribeTokenRefresh = (cb) => {
+    refreshSubscribers.push(cb);
+};
+
+// Hàm để thông báo cho các yêu cầu rằng token đã được làm mới
+const onRefreshed = (newToken) => {
+    refreshSubscribers.map(cb => cb(newToken));
+    refreshSubscribers = [];
+};
+
+// Hàm làm mới token
+const refreshToken = async () => {
+    try {
+        const response = await axios.post('http://localhost:8080/api/v1/refresh-token', {}, { withCredentials: true });
+        const { DT: newToken } = response.data;
+        localStorage.setItem('jwt', newToken);
+        instance.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("jwt")}`;
+        onRefreshed(newToken);
+        return newToken;
+    } catch (error) {
+        console.error('Unable to refresh token', error);
+        window.location.href = "/login";
+        throw error;
+    }
+};
+
+const handleDecoded = () => {
+    let token = localStorage.getItem("jwt");
+    let decoded = {}
+    if (token) {
+        decoded = jwtDecode(token);
+    }
+    return { decoded };
+}
 
 // Add a request interceptor
-instance.interceptors.request.use(function (config) {
+instance.interceptors.request.use(async function (config) {
     // Do something before request is sent
+    const token = localStorage.getItem("jwt");
+
+    const currentTime = new Date();
+    const {decoded} = handleDecoded();
+    if (decoded?.exp && decoded.exp < currentTime.getTime() / 1000) {
+        if (!isRefreshing) {
+            isRefreshing = true;
+            try {
+                const newToken = await refreshToken();
+                config.headers['Authorization'] = `Bearer ${newToken}`;
+            } catch (error) {
+                return Promise.reject(error);
+            } finally {
+                isRefreshing = false;
+            }
+        } else {
+            return new Promise((resolve) => {
+                subscribeTokenRefresh((newToken) => {
+                    config.headers['Authorization'] = `Bearer ${newToken}`;
+                    resolve(config);
+                });
+            });
+        }
+    } else {
+        config.headers['Authorization'] = `Bearer ${token}`;
+    }
+
     return config;
 }, function (error) {
     // Do something with request error
@@ -38,7 +105,6 @@ instance.interceptors.response.use(function (response) {
             if(window.location.pathname !== '/'
             && window.location.pathname !== '/login'
             && window.location.pathname !== '/register') {
-                // toast.error("Unauthorized! Please login!");
                 window.location.href = "/login";
             }
             return error.response.data;

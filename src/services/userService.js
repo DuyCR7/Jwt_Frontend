@@ -45,6 +45,10 @@ const getUserById = (id) => {
     return axios.get(`/api/v1/user/get-by-id/${id}`);
 }
 
+const refreshToken = () => {
+    return axios.post("/api/v1/refresh-token");
+}
+
 export {
     registerNewUser,
     loginUser,
@@ -55,5 +59,6 @@ export {
     updateUser,
     getUserAccount,
     logoutUser,
-    getUserById
+    getUserById,
+    refreshToken
 }
