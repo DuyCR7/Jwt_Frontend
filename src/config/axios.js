@@ -3,6 +3,13 @@ import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 // import { refreshToken } from "../services/userService";
 
+import nProgress from "nprogress";
+
+nProgress.configure({
+    showSpinner: false,
+    trickleSpeed: 100
+});
+
 // Set config defaults when creating the instance
 const instance = axios.create({
     baseURL: 'http://localhost:8080'
@@ -57,6 +64,8 @@ const handleDecoded = () => {
 // Add a request interceptor
 instance.interceptors.request.use(async function (config) {
     // Do something before request is sent
+    nProgress.start();
+
     const token = localStorage.getItem("jwt");
 
     const currentTime = new Date();
@@ -94,6 +103,7 @@ instance.interceptors.request.use(async function (config) {
 instance.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
+    nProgress.done();
     return response.data;
 }, function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
@@ -107,6 +117,7 @@ instance.interceptors.response.use(function (response) {
             && window.location.pathname !== '/register') {
                 window.location.href = "/login";
             }
+            nProgress.done();
             return error.response.data;
         }
 
@@ -123,31 +134,37 @@ instance.interceptors.response.use(function (response) {
                     hasShown403Error = false;
                 }, 100);
             }
+            nProgress.done();
             return Promise.resolve({ error: "Forbidden" });
         }
 
         // bad request
         case 400: {
+            nProgress.done();
             return error.response.data;
         }
 
         // not found
         case 404: {
+            nProgress.done();
             return error.response.data;
         }
 
         // conflict
         case 409: {
+            nProgress.done();
             return error.response.data;
         }
 
         // unprocessable
         case 422: {
+            nProgress.done();
             return error.response.data;
         }
 
         // generic api error (server related) unexpected
         default: {
+            nProgress.done();
             return error.response.data;
         }
     }

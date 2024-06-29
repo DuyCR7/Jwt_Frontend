@@ -9,8 +9,8 @@ const registerNewUser = (email, phone, username, password) => {
 
 const loginUser = (valueLogin, password) => {
     return axios.post("/api/v1/login", {
-        valueLogin, password
-    })
+        valueLogin, password, delay: 2000
+    });
 }
 
 const fetchAllUsers = (page, limit) => {
