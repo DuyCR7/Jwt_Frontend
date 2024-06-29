@@ -4,6 +4,7 @@ import {fetchAllUsers} from "../../services/userService";
 import ReactPaginate from 'react-paginate';
 import ModalDelete from "./ModalDelete";
 import ModalUser from "./ModalUser";
+import { Spin } from 'antd';
 
 const Users = (props) => {
 
@@ -12,6 +13,7 @@ const Users = (props) => {
     const [listUsers, setListUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const [isShowModalDelete, setIsShowModalDelete] = useState(false);
     const [dataDelete, setDataDelete] = useState({});
@@ -36,7 +38,9 @@ const Users = (props) => {
     }, [currentPage]);
 
     const fetchUsers = async (currentPage) => {
+        setLoading(true);
         let res = await fetchAllUsers(currentPage, LIMIT_USER);
+        setLoading(false)
         // console.log(res);
         if (res && res.EC === 0) {
             setTotalPage(res.DT.totalPages);
@@ -94,58 +98,60 @@ const Users = (props) => {
                     </div>
 
                     <div className="user-body">
-                        <div className="table-responsive">
-                            <table className="table table-bordered table-hover">
-                            <thead>
-                            <tr className="text-center">
-                                <th scope="col">No</th>
-                                <th scope="col">Id</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Username</th>
-                                <th scope="col">Group</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {listUsers && listUsers.length > 0 ?
-                                <>
-                                    {listUsers.map((item, index) => {
-                                        const globalIndex = (currentPage - 1) * LIMIT_USER + index + 1;
-                                        return (
-                                            <tr className="text-center" key={`row-${index}`}>
-                                                <th scope="row">{globalIndex}</th>
-                                                <td>{item.id}</td>
-                                                <td>{item.email}</td>
-                                                <td>{item.username}</td>
-                                                <td>{item.Group ? item.Group.name : ""}</td>
-                                                <td>
-                                                    <div className="d-flex justify-content-center">
-                                                        <button className="btn btn-sm btn-warning me-2"
-                                                                onClick={() => handleEditUser(item)}
-                                                                title="Edit">
-                                                            <i className="fa fa-pencil-square-o"></i>
-                                                        </button>
-                                                        <button className="btn btn-sm btn-danger"
-                                                                onClick={() => handleDeleteUser(item)}
-                                                                title="Delete">
-                                                            <i className="fa fa-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
-                                </>
-                                :
-                                <>
-                                    <tr>
-                                        <td colSpan={6}>Not found users!</td>
+                        <Spin spinning={loading}>
+                            <div className="table-responsive">
+                                <table className="table table-bordered table-hover">
+                                    <thead>
+                                    <tr className="text-center">
+                                        <th scope="col">No</th>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Group</th>
+                                        <th scope="col">Actions</th>
                                     </tr>
-                                </>
-                            }
-                            </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                    {listUsers && listUsers.length > 0 ?
+                                        <>
+                                            {listUsers.map((item, index) => {
+                                                const globalIndex = (currentPage - 1) * LIMIT_USER + index + 1;
+                                                return (
+                                                    <tr className="text-center" key={`row-${index}`}>
+                                                        <th scope="row">{globalIndex}</th>
+                                                        <td>{item.id}</td>
+                                                        <td>{item.email}</td>
+                                                        <td>{item.username}</td>
+                                                        <td>{item.Group ? item.Group.name : ""}</td>
+                                                        <td>
+                                                            <div className="d-flex justify-content-center">
+                                                                <button className="btn btn-sm btn-warning me-2"
+                                                                        onClick={() => handleEditUser(item)}
+                                                                        title="Edit">
+                                                                    <i className="fa fa-pencil-square-o"></i>
+                                                                </button>
+                                                                <button className="btn btn-sm btn-danger"
+                                                                        onClick={() => handleDeleteUser(item)}
+                                                                        title="Delete">
+                                                                    <i className="fa fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })}
+                                        </>
+                                        :
+                                        <>
+                                            <tr>
+                                                <td colSpan={6}>Not found users!</td>
+                                            </tr>
+                                        </>
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </Spin>
                     </div>
 
                     {totalPage > 0 &&
