@@ -124,6 +124,7 @@ const ModalUser = (props) => {
     const handleClickCloseModal = () => {
         props.handleCloseModalUser();
         setObjCheckInput(defaultValidInput);
+        setUserData({...defaultUserData, groupId: userGroup[0].id});
     }
 
     return (
@@ -141,21 +142,21 @@ const ModalUser = (props) => {
                         <div className="col-12 col-sm-6 form-group">
                             <label>Email (<span className="red">*</span>):</label>
                             <input type="email" className={objCheckInput.email ? "form-control" : "form-control is-invalid"}
-                                   value={userData.email}
+                                   value={userData.email || ""}
                                    onChange={(e) => handleOnChangeInput(e.target.value, "email")}
                                    disabled={props.actionModalUser === "CREATE" ? false : true} />
                         </div>
                         <div className="col-12 col-sm-6 form-group">
                             <label>Phone (<span className="red">*</span>):</label>
                             <input type="text" className={objCheckInput.phone ? "form-control" : "form-control is-invalid"}
-                                   value={userData.phone}
+                                   value={userData.phone || ""}
                                    onChange={(e) => handleOnChangeInput(e.target.value, "phone")}
                                    disabled={props.actionModalUser === "CREATE" ? false : true}/>
                         </div>
                         <div className="col-12 col-sm-6 form-group">
                             <label>Username:</label>
                             <input type="text" className="form-control"
-                                   value={userData.username}
+                                   value={userData.username || ""}
                                    onChange={(e) => handleOnChangeInput(e.target.value, "username")}/>
                         </div>
                         <div className="col-12 col-sm-6 form-group">
@@ -163,7 +164,7 @@ const ModalUser = (props) => {
                                 <>
                                     <label>Password (<span className="red">*</span>):</label>
                                     <input type="password" className={objCheckInput.password ? "form-control" : "form-control is-invalid"}
-                                           value={userData.password}
+                                           value={userData.password || ""}
                                            onChange={(e) => handleOnChangeInput(e.target.value, "password")}/>
                                 </>
                             }
@@ -172,7 +173,7 @@ const ModalUser = (props) => {
                             <label>Sex:</label>
                             <select className="form-select" aria-label="Default select example"
                                     onChange={(e) => handleOnChangeInput(e.target.value, "sex")}
-                                    value={userData.sex}>
+                                    value={userData.sex || ""}>
                                 <option defaultValue="Male">Male</option>
                                 <option value="Female">Famale</option>
                                 <option value="Other">Other</option>
@@ -182,7 +183,7 @@ const ModalUser = (props) => {
                             <label>Group (<span className="red">*</span>):</label>
                             <select className={objCheckInput.groupId ? "form-select" : "form-select is-invalid"} aria-label="Default select example"
                                     onChange={(e) => handleOnChangeInput(e.target.value, "groupId")}
-                                    value={userData.groupId}>
+                                    value={userData.groupId || ""}>
                                 {userGroup.length > 0 &&
                                 userGroup.map((item, index) => {
                                     return (
@@ -194,7 +195,7 @@ const ModalUser = (props) => {
                         <div className="col-12 col-sm-12 form-group">
                             <label>Address:</label>
                             <input type="text" className="form-control"
-                                   value={userData.address}
+                                   value={userData.address || ""}
                                    onChange={(e) => handleOnChangeInput(e.target.value, "address")}/>
                         </div>
                     </div>
