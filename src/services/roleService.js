@@ -28,6 +28,10 @@ const assignRolesToGroup = (data) => {
     return axios.post("/api/v1/role/assign-to-group", {data});
 }
 
+const deleteManyRoles = (selectedIds) => {
+    return axios.post("/api/v1/role/delete-many", selectedIds);
+}
+
 export {
     createRoles,
     getAllRoles,
@@ -35,5 +39,6 @@ export {
     fetchAllRolesWithPaginate,
     updateRole,
     getRolesByGroup,
-    assignRolesToGroup
+    assignRolesToGroup,
+    deleteManyRoles
 }
