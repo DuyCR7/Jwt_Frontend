@@ -114,9 +114,9 @@ const Role = (props) => {
             if (res && res.EC === 0) {
                 toast.success(res.EM);
 
-                setListRoles([...listRoles, role]);
                 setKey('manage-role');
                 childRef.current.fetchListRolesAgain();
+                setListRoles(childRef.current.getListRoles());
             } else {
                 toast.error(res.EM);
             }
@@ -136,6 +136,7 @@ const Role = (props) => {
 
                 setKey('manage-role');
                 childRef.current.fetchListRolesAgain();
+                setListRoles(childRef.current.getListRoles());
             } else {
                 toast.error(res.EM);
             }
