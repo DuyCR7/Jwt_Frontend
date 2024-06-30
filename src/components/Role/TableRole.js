@@ -3,6 +3,7 @@ import {deleteRole, getAllRoles, fetchAllRolesWithPaginate} from "../../services
 import {toast} from "react-toastify";
 import ReactPaginate from "react-paginate";
 import ModalRole from "./ModalRole";
+import { Spin } from "antd";
 
 const TableRole = forwardRef((props, ref) => {
 
@@ -10,6 +11,7 @@ const TableRole = forwardRef((props, ref) => {
     const LIMIT_ROLE = 4;
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const [isShowModalUpdate, setIsShowModalUpdate] = useState(false);
     const [dataUpdate, setDataUpdate] = useState({});
@@ -19,10 +21,17 @@ const TableRole = forwardRef((props, ref) => {
     }, [currentPage]);
 
     const fetchListRolesWithPagination = async (currentPage) => {
-        let res = await fetchAllRolesWithPaginate(currentPage, LIMIT_ROLE);
-        if (res && res.EC === 0) {
-            setTotalPage(res.DT.totalPages);
-            setListRoles(res.DT.roles);
+        setLoading(true);
+        try {
+            let res = await fetchAllRolesWithPaginate(currentPage, LIMIT_ROLE);
+            if (res && res.EC === 0) {
+                setTotalPage(res.DT.totalPages);
+                setListRoles(res.DT.roles);
+            }
+        } catch (error) {
+            console.log("Failed to fetch listRolesWithPagination: ", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -34,13 +43,17 @@ const TableRole = forwardRef((props, ref) => {
    }))
 
     const handleDeleteRole = async (role) => {
-        let res = await deleteRole(role);
-        if(res && res.EC === 0){
-            toast.success(res.EM);
-            setCurrentPage(1);
-            await fetchListRolesWithPagination(1);
-        } else {
-            toast.error(res.EM);
+        try {
+            let res = await deleteRole(role);
+            if(res && res.EC === 0){
+                toast.success(res.EM);
+                setCurrentPage(1);
+                await fetchListRolesWithPagination(1);
+            } else {
+                toast.error(res.EM);
+            }
+        } catch (error) {
+            console.log("Error delete role: ", error);
         }
     }
 
@@ -61,6 +74,7 @@ const TableRole = forwardRef((props, ref) => {
 
     return (
         <>
+            <Spin spinning={loading}>
             <div className="table-responsive">
                 <table className="table table-bordered table-hover">
                     <thead>
@@ -111,6 +125,7 @@ const TableRole = forwardRef((props, ref) => {
                     </tbody>
                 </table>
             </div>
+            </Spin>
 
             {totalPage > 0 &&
                 <div className="user-footer row justify-content-center">

@@ -39,12 +39,16 @@ const Users = (props) => {
 
     const fetchUsers = async (currentPage) => {
         setLoading(true);
-        let res = await fetchAllUsers(currentPage, LIMIT_USER);
-        setLoading(false)
-        // console.log(res);
-        if (res && res.EC === 0) {
-            setTotalPage(res.DT.totalPages);
-            setListUsers(res.DT.users);
+        try {
+            let res = await fetchAllUsers(currentPage, LIMIT_USER);
+            if (res && res.EC === 0) {
+                setTotalPage(res.DT.totalPages);
+                setListUsers(res.DT.users);
+            }
+        } catch (error) {
+            console.error("Failed to fetch users", error);
+        } finally {
+            setLoading(false);
         }
     }
 

@@ -5,10 +5,12 @@ import "./Users.scss";
 import {fetchGroup, createUser, updateUser} from "../../services/userService";
 import {toast} from "react-toastify";
 import _ from "lodash";
+import { Spin } from 'antd';
 
 const ModalUser = (props) => {
 
     const [userGroup, setUserGroup] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const defaultUserData = {
         email: "",
@@ -62,29 +64,36 @@ const ModalUser = (props) => {
     const handleSubmit = async () => {
         let check = isValidInputs();
         if (check) {
-            let res = props.actionModalUser === "CREATE" ?
-                await createUser(userData)
-                :
-                await updateUser(userData);
+            setLoading(true);
+            try {
+                let res = props.actionModalUser === "CREATE" ?
+                    await createUser(userData)
+                    :
+                    await updateUser(userData);
 
-            if (res && res.EC === 0) {
-                props.handleCloseModalUser();
-                setUserData({...defaultUserData, groupId: userGroup[0].id});
-                toast.success(res.EM);
+                if (res && res.EC === 0) {
+                    props.handleCloseModalUser();
+                    setUserData({...defaultUserData, groupId: userGroup[0].id});
+                    toast.success(res.EM);
 
-                if(props.actionModalUser === "CREATE"){
-                    props.setCurrentPage(1);
-                    await props.fetchUsers(1);
+                    if(props.actionModalUser === "CREATE"){
+                        props.setCurrentPage(1);
+                        await props.fetchUsers(1);
+                    } else {
+                        await props.fetchUsers(props.currentPage);
+                    }
+
                 } else {
-                    await props.fetchUsers(props.currentPage);
+                    toast.error(res.EM);
+
+                    let _objCheckInput = _.cloneDeep(defaultValidInput);
+                    _objCheckInput[res.DT] = false;
+                    setObjCheckInput(_objCheckInput);
                 }
-
-            } else {
-                toast.error(res.EM);
-
-                let _objCheckInput = _.cloneDeep(defaultValidInput);
-                _objCheckInput[res.DT] = false;
-                setObjCheckInput(_objCheckInput);
+            } catch (error) {
+                console.log("Error: ", error);
+            } finally {
+                setLoading(false);
             }
         }
     }
@@ -109,15 +118,19 @@ const ModalUser = (props) => {
     }, [props.actionModalUser]);
 
     const getGroups = async () => {
-        let res = await fetchGroup();
-        if (res && res.EC === 0){
-            if (res.DT && res.DT.length > 0) {
-                setUserGroup(res.DT);
-                let groups = res.DT;
-                setUserData({...userData, groupId: groups[0].id});
+        try {
+            let res = await fetchGroup();
+            if (res && res.EC === 0){
+                if (res.DT && res.DT.length > 0) {
+                    setUserGroup(res.DT);
+                    let groups = res.DT;
+                    setUserData({...userData, groupId: groups[0].id});
+                }
+            } else {
+                // toast.error(res.EM);
             }
-        } else {
-            // toast.error(res.EM);
+        } catch (error) {
+            console.log("Error getGroups: ", error);
         }
     }
 
@@ -130,6 +143,7 @@ const ModalUser = (props) => {
     return (
         <>
             <Modal show={props.isShowModalUser} onHide={() => handleClickCloseModal()} size={"lg"} className="modal-user" centered>
+                <Spin spinning={loading}>
                 <Modal.Header closeButton>
                     <Modal.Title>
                         <span>
@@ -208,6 +222,7 @@ const ModalUser = (props) => {
                         Save
                     </Button>
                 </Modal.Footer>
+                </Spin>
             </Modal>
         </>
     )

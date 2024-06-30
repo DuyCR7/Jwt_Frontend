@@ -15,14 +15,18 @@ const NavHeader = (props) => {
     const history = useHistory();
 
     const handleLogout = async () => {
-        let data = await logoutUser(); // clear cookie
-        localStorage.removeItem("jwt"); // clear local storage
-        logoutContext(); // clear user in context
-        if (data && data.EC === 0) {
-            toast.success(data.EM);
-            history.push("/login");
-        } else {
-            toast.error(data.EM);
+        try {
+            let data = await logoutUser(); // clear cookie
+            localStorage.removeItem("jwt"); // clear local storage
+            logoutContext(); // clear user in context
+            if (data && data.EC === 0) {
+                toast.success(data.EM);
+                history.push("/login");
+            } else {
+                toast.error(data.EM);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
         }
     }
 

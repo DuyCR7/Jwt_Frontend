@@ -5,10 +5,12 @@ import { v4 as uuidv4 } from "uuid";
 import {toast} from "react-toastify";
 import {createRoles} from "../../services/roleService";
 import TableRole from "./TableRole";
+import { Spin } from 'antd';
 
 const Role = (props) => {
 
     const childRef = useRef();
+    const [loading, setLoading] = useState(false);
 
     const dataChildDefault = {
         url: '',
@@ -63,14 +65,21 @@ const Role = (props) => {
         if(!inValidObj){
             // call api
             let data = buildDataToPersist();
-            let res = await createRoles(data);
-            // console.log("Check res: ", res);
-            if(res && res.EC === 0){
-                setListChild({child_1: dataChildDefault});
-                toast.success(res.EM);
-                childRef.current.fetchListRolesAgain();
-            } else {
-                toast.error(res.EM);
+            setLoading(true);
+            try {
+                let res = await createRoles(data);
+                // console.log("Check res: ", res);
+                if(res && res.EC === 0){
+                    setListChild({child_1: dataChildDefault});
+                    toast.success(res.EM);
+                    childRef.current.fetchListRolesAgain();
+                } else {
+                    toast.error(res.EM);
+                }
+            } catch (error) {
+                console.log("Error creating role: ", error);
+            } finally {
+                setLoading(false);
             }
             // console.log("Check data build: ", data);
         } else {
@@ -125,7 +134,9 @@ const Role = (props) => {
                                 })
                             }
                             <div className="text-center text-sm-end">
+                                <Spin spinning={loading}>
                                 <button className="btn btn-success mt-3" onClick={() => handleSave()}>Save</button>
+                                </Spin>
                             </div>
                         </div>
                     </div>

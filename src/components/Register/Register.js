@@ -4,11 +4,13 @@ import { useHistory } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { registerNewUser } from "../../services/userService";
 import {UserContext} from "../../context/UserContext";
+import { Spin } from 'antd';
 
 const Register = (props) => {
 
     const {user} = useContext(UserContext);
     const history = useHistory();
+    const [loading, setLoading] = useState(false);
 
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
@@ -75,14 +77,21 @@ const Register = (props) => {
     const handleRegister = async () => {
         let check = isValidInputs();
         if (check === true) {
-            let res = await registerNewUser(email, phone, username, password);
-            // console.log("Check res: ", res);
+            setLoading(true);
+            try {
+                let res = await registerNewUser(email, phone, username, password);
+                // console.log("Check res: ", res);
 
-            if(res.EC === 0){
-                toast.success(res.EM);
-                history.push("/login");
-            } else {
-                toast.error(res.EM);
+                if(res.EC === 0){
+                    toast.success(res.EM);
+                    history.push("/login");
+                } else {
+                    toast.error(res.EM);
+                }
+            } catch (error) {
+                console.log("Error: ", error);
+            } finally {
+                setLoading(false);
             }
         }
     }
@@ -140,7 +149,9 @@ const Register = (props) => {
                                     value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
                             </div>
 
-                            <button className="btn btn-primary" onClick={() => handleRegister()}>Register</button>
+                            <Spin spinning={loading} className="w-100">
+                                <button className="btn btn-primary w-100" onClick={() => handleRegister()}>Register</button>
+                            </Spin>
                             <hr/>
                             <div className="text-center">
                                 <button className="btn btn-success" onClick={() => handleLogin()}>

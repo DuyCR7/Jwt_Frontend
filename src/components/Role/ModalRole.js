@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import _ from "lodash";
 import {toast} from "react-toastify";
 import {updateRole} from "../../services/roleService";
+import { Spin } from "antd";
 
 const ModalRole = (props) => {
 
@@ -13,6 +14,7 @@ const ModalRole = (props) => {
     }
 
     const [roleData, setRoleData] = useState(defaultRoleData);
+    const [loading, setLoading] = useState(false);
 
     const handleOnChangeInput = (value, name) => {
         let _roleData = _.cloneDeep(roleData);
@@ -45,19 +47,26 @@ const ModalRole = (props) => {
     const handleSubmit = async () => {
         let check = isValidInputs();
         if (check) {
-            let res = await updateRole(roleData);
-            if(res && res.EC === 0){
-                props.handleCloseModalUpdate();
-                setRoleData(defaultRoleData);
-                toast.success(res.EM);
+            setLoading(true);
+            try {
+                let res = await updateRole(roleData);
+                if(res && res.EC === 0){
+                    props.handleCloseModalUpdate();
+                    setRoleData(defaultRoleData);
+                    toast.success(res.EM);
 
-                await props.fetchListRolesWithPagination(props.currentPage);
-            } else {
-                toast.error(res.EM);
+                    await props.fetchListRolesWithPagination(props.currentPage);
+                } else {
+                    toast.error(res.EM);
 
-                let _objCheckInput = _.cloneDeep(defaultValidInput);
-                _objCheckInput[res.DT] = false;
-                setObjCheckInput(_objCheckInput);
+                    let _objCheckInput = _.cloneDeep(defaultValidInput);
+                    _objCheckInput[res.DT] = false;
+                    setObjCheckInput(_objCheckInput);
+                }
+            } catch (error) {
+                console.log("Error updating role: ", error);
+            } finally {
+                setLoading(false);
             }
         }
     }
@@ -73,6 +82,7 @@ const ModalRole = (props) => {
     return (
         <>
             <Modal show={props.isShowModalUpdate} onHide={() => handleClickCloseModal()} size={"lg"} className="modal-role" centered>
+                <Spin spinning={loading}>
                 <Modal.Header closeButton>
                     <Modal.Title>
                         <span>
@@ -106,6 +116,7 @@ const ModalRole = (props) => {
                         Save
                     </Button>
                 </Modal.Footer>
+                </Spin>
             </Modal>
         </>
     )

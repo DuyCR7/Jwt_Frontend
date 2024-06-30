@@ -24,34 +24,38 @@ const UserProvider = ({ children }) => {
     };
 
     const fetchUser = async () => {
-        let res = await getUserAccount();
-        if (res && res.EC === 0) {
-            let groupWithRoles = res.DT.groupWithRoles;
-            let email = res.DT.email;
-            // let username = res.DT.username;
-            let username = "";
-            let token = res.DT.access_token;
-            let id = res.DT.id;
-            let userFetch = await getUserById(id);
-            if (userFetch && userFetch.EC === 0){
-                username = userFetch.DT.username;
-            } else {
-                username = res.DT.username;
-            }
-
-            let data = {
-                isAuthenticated: true,
-                token: token,
-                account: {
-                    groupWithRoles,
-                    email,
-                    username,
-                    isLoading: false
+        try {
+            let res = await getUserAccount();
+            if (res && res.EC === 0) {
+                let groupWithRoles = res.DT.groupWithRoles;
+                let email = res.DT.email;
+                // let username = res.DT.username;
+                let username = "";
+                let token = res.DT.access_token;
+                let id = res.DT.id;
+                let userFetch = await getUserById(id);
+                if (userFetch && userFetch.EC === 0){
+                    username = userFetch.DT.username;
+                } else {
+                    username = res.DT.username;
                 }
+
+                let data = {
+                    isAuthenticated: true,
+                    token: token,
+                    account: {
+                        groupWithRoles,
+                        email,
+                        username,
+                        isLoading: false
+                    }
+                }
+                setUser(data);
+            } else {
+                setUser({...userDefault, isLoading: false});
             }
-            setUser(data);
-        } else {
-            setUser({...userDefault, isLoading: false});
+        } catch (error) {
+            console.log("Error getting user data: ", error);
         }
     }
 
