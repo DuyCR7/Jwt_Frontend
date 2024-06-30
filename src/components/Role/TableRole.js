@@ -44,7 +44,9 @@ const TableRole = forwardRef((props, ref) => {
         fetchListRolesAgain() {
             setCurrentPage(1);
             fetchListRolesWithPagination(1);
-        }
+        },
+
+        getListRoles: () => listRoles,
    }))
 
     const handleDeleteRole = async (role) => {
@@ -54,6 +56,7 @@ const TableRole = forwardRef((props, ref) => {
                 toast.success(res.EM);
                 setCurrentPage(1);
                 await fetchListRolesWithPagination(1);
+                props.handleDeleteRoleSuccess();
             } else {
                 toast.error(res.EM);
             }
@@ -108,6 +111,7 @@ const TableRole = forwardRef((props, ref) => {
                 setSelectAll(false);
                 setCurrentPage(1);
                 await fetchListRolesWithPagination(1);
+                props.handleDeleteRoleSuccess();
             } else {
                 toast.error(res.EM);
             }
@@ -180,7 +184,7 @@ const TableRole = forwardRef((props, ref) => {
                         :
                         <>
                             <tr>
-                                <td colSpan={5}>Not found roles!</td>
+                                <td colSpan={6}>Not found roles!</td>
                             </tr>
                         </>
                     }

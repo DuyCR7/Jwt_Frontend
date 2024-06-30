@@ -32,6 +32,18 @@ const deleteManyRoles = (selectedIds) => {
     return axios.post("/api/v1/role/delete-many", selectedIds);
 }
 
+const getAllTrash = () => {
+    return axios.get("/api/v1/role/read-trash");
+}
+
+const restoreRole = (data) => {
+    return axios.put("/api/v1/role/restore", {...data});
+}
+
+const restoreManyRoles = (selectedIds) => {
+    return axios.post("/api/v1/role/restore-many", selectedIds);
+}
+
 export {
     createRoles,
     getAllRoles,
@@ -40,5 +52,8 @@ export {
     updateRole,
     getRolesByGroup,
     assignRolesToGroup,
-    deleteManyRoles
+    deleteManyRoles,
+    getAllTrash,
+    restoreRole,
+    restoreManyRoles
 }
