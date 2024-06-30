@@ -3,29 +3,36 @@ import Modal from 'react-bootstrap/Modal';
 import {deleteUser} from "../../services/userService";
 import {toast} from "react-toastify";
 import { Spin } from 'antd';
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {UserContext} from "../../context/UserContext";
 
 const ModalDelete = (props) => {
 
+    const { user } = useContext(UserContext);
+
     const [loading, setLoading] = useState(false);
-
     const confirmDeleteUser = async () => {
-        setLoading(true);
-        try {
-            let res = await deleteUser(props.dataDelete);
-            if (res && res.EC === 0) {
-                toast.success(res.EM)
-                props.handleCloseModalDelete();
+        if (user.account.id === props.dataDelete.id) {
+            toast.error("You can't delete your account!");
+            return;
+        } else {
+            setLoading(true);
+            try {
+                let res = await deleteUser(props.dataDelete);
+                if (res && res.EC === 0) {
+                    toast.success(res.EM)
+                    props.handleCloseModalDelete();
 
-                props.setCurrentPage(1);
-                await props.fetchUsers(1);
-            } else {
-                toast.error(res.EM);
+                    props.setCurrentPage(1);
+                    await props.fetchUsers(1);
+                } else {
+                    toast.error(res.EM);
+                }
+            } catch (error) {
+                console.log("Error: ", error);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.log("Error: ", error);
-        } finally {
-            setLoading(false);
         }
     }
 

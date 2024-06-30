@@ -44,6 +44,7 @@ const UserProvider = ({ children }) => {
                     isAuthenticated: true,
                     token: token,
                     account: {
+                        id,
                         groupWithRoles,
                         email,
                         username,

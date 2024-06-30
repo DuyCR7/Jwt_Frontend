@@ -95,14 +95,14 @@ const ModalRole = (props) => {
                         <div className="col-12 col-sm-6 form-group">
                             <label>URL (<span className="red">*</span>):</label>
                             <input type="email" className={objCheckInput.url ? "form-control" : "form-control is-invalid"}
-                                   value={roleData.url}
+                                   value={roleData.url || ""}
                                    onChange={(e) => handleOnChangeInput(e.target.value, "url")}
                                    />
                         </div>
                         <div className="col-12 col-sm-6 form-group">
                             <label>Description:</label>
                             <input type="text" className="form-control"
-                                   value={roleData.description}
+                                   value={roleData.description || ""}
                                    onChange={(e) => handleOnChangeInput(e.target.value, "description")}
                                    />
                         </div>
