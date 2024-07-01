@@ -9,6 +9,8 @@ const TrashRole = (props) => {
 
     const [listTrash, setListTrash] = useState([]);
 
+    const [searchedVal, setSearchedVal] = useState("");
+
     const [selectedIds, setSelectedIds] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
 
@@ -37,6 +39,12 @@ const TrashRole = (props) => {
         await fetchAllRolesOnTrash();
     }
 
+    const getFilteredRoles = () => {
+        return listTrash.filter((row) =>
+            !searchedVal.length || row.url.toLowerCase().includes(searchedVal.toLowerCase())
+        );
+    }
+
     const toggleCheckbox = (id) => {
         const currentIndex = selectedIds.indexOf(id);
         const newSelectedIds = [...selectedIds];
@@ -46,14 +54,16 @@ const TrashRole = (props) => {
             newSelectedIds.splice(currentIndex, 1);
         }
         setSelectedIds(newSelectedIds);
-        setSelectAll(newSelectedIds.length === listTrash.length);
+        const filteredRoles = getFilteredRoles();
+        setSelectAll(newSelectedIds.length === filteredRoles.length);
     };
 
     const toggleSelectAll = () => {
+        const filteredRoles = getFilteredRoles();
         if (selectAll) {
             setSelectedIds([]);
         } else {
-            const ids = listTrash.map(role => role.id);
+            const ids = filteredRoles.map(role => role.id);
             setSelectedIds(ids);
         }
         setSelectAll(!selectAll);
@@ -89,70 +99,78 @@ const TrashRole = (props) => {
     };
 
     return (
-        <Spin spinning={loading}>
-            {
-                selectedIds.length > 0 &&
-                <button className="btn btn-sm btn-warning mb-3" onClick={() => onRestoreManyRoles(selectedIds)}>Restore All</button>
-            }
-            <div className="table-responsive">
-                <table className="table table-bordered table-hover">
-                    <thead>
-                    <tr className="text-center">
-                        <th scope="col">
-                            <input
-                                type="checkbox"
-                                checked={selectAll}
-                                onChange={toggleSelectAll}
-                            />
-                        </th>
-                        <th scope="col">Id</th>
-                        <th scope="col">URL</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Deleted At</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {listTrash && listTrash.length > 0 ?
-                        <>
-                            {listTrash.map((item, index) => {
-                                return (
-                                    <tr className="text-center" key={`row-${index}`}>
-                                        <td>
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedIds.includes(item.id)}
-                                                onChange={() => toggleCheckbox(item.id)}
-                                            />
-                                        </td>
-                                        <td>{item.id}</td>
-                                        <td>{item.url}</td>
-                                        <td>{item.description}</td>
-                                        <td>{formatDateTime(item.deletedAt)}</td>
-                                        <td>
-                                            <div className="d-flex justify-content-center">
-                                                <button className="btn btn-sm btn-warning me-3"
-                                                        onClick={() => onRestoreRole(item)}
-                                                        title="Restore">
-                                                    <i className="fa fa-window-restore"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                        </>
-                        :
-                        <>
-                            <tr>
-                                <td colSpan={6}>Trash empty!</td>
-                            </tr>
-                        </>
-                    }
-                    </tbody>
-                </table>
+        <>
+            <div className="form-group">
+                <input type="text" className="form-control mb-3"
+                       placeholder="Enter URL..."
+                       onChange={(e) => setSearchedVal(e.target.value)}/>
             </div>
-        </Spin>
+            <Spin spinning={loading}>
+                {
+                    selectedIds.length > 0 &&
+                    <button className="btn btn-sm btn-warning mb-3"
+                            onClick={() => onRestoreManyRoles(selectedIds)}>Restore All</button>
+                }
+                <div className="table-responsive">
+                    <table className="table table-bordered table-hover">
+                        <thead>
+                        <tr className="text-center">
+                            <th scope="col">
+                                <input
+                                    type="checkbox"
+                                    checked={selectAll}
+                                    onChange={toggleSelectAll}
+                                />
+                            </th>
+                            <th scope="col">Id</th>
+                            <th scope="col">URL</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Deleted At</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {listTrash && listTrash.length > 0 ?
+                            <>
+                                {getFilteredRoles().map((item, index) => {
+                                    return (
+                                        <tr className="text-center" key={`row-${index}`}>
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedIds.includes(item.id)}
+                                                    onChange={() => toggleCheckbox(item.id)}
+                                                />
+                                            </td>
+                                            <td>{item.id}</td>
+                                            <td>{item.url}</td>
+                                            <td>{item.description}</td>
+                                            <td>{formatDateTime(item.deletedAt)}</td>
+                                            <td>
+                                                <div className="d-flex justify-content-center">
+                                                    <button className="btn btn-sm btn-warning me-3"
+                                                            onClick={() => onRestoreRole(item)}
+                                                            title="Restore">
+                                                        <i className="fa fa-window-restore"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </>
+                            :
+                            <>
+                                <tr>
+                                    <td colSpan={6}>Trash empty!</td>
+                                </tr>
+                            </>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </Spin>
+        </>
     )
 }
 
