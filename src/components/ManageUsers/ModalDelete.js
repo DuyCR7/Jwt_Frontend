@@ -24,7 +24,7 @@ const ModalDelete = (props) => {
                     props.handleCloseModalDelete();
 
                     props.setCurrentPage(1);
-                    await props.fetchUsers(1);
+                    await props.fetchUsers(1, props.numRows);
                 } else {
                     toast.error(res.EM);
                 }

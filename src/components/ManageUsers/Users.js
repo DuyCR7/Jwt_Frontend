@@ -5,6 +5,7 @@ import ReactPaginate from 'react-paginate';
 import ModalDelete from "./ModalDelete";
 import ModalUser from "./ModalUser";
 import { Spin } from 'antd';
+import {value} from "lodash/seq";
 
 const Users = (props) => {
 
@@ -23,6 +24,8 @@ const Users = (props) => {
 
     const [actionModalUser, setActionModalUser] = useState("CREATE");
 
+    const [numRows, setNumRows] = useState(10);
+
     const handleCloseModalDelete = () => {
         setIsShowModalDelete(false);
         setDataDelete({});
@@ -34,13 +37,13 @@ const Users = (props) => {
     }
 
     useEffect(() => {
-        fetchUsers(currentPage);
-    }, [currentPage]);
+        fetchUsers(currentPage, numRows);
+    }, [currentPage, numRows]);
 
-    const fetchUsers = async (currentPage) => {
+    const fetchUsers = async (currentPage, numRows) => {
         setLoading(true);
         try {
-            let res = await fetchAllUsers(currentPage, LIMIT_USER);
+            let res = await fetchAllUsers(currentPage, numRows);
             if (res && res.EC === 0) {
                 setTotalPage(res.DT.totalPages);
                 setListUsers(res.DT.users);
@@ -71,7 +74,13 @@ const Users = (props) => {
 
     const handleRefresh = async () => {
         setCurrentPage(1);
-        await fetchUsers(1);
+        await fetchUsers(currentPage, numRows);
+    }
+
+    const handleShowRows = async (numRows) => {
+        setNumRows(numRows);
+        setCurrentPage(1);
+        await fetchUsers(currentPage, numRows);
     }
 
     return (
@@ -104,9 +113,9 @@ const Users = (props) => {
                     <div className="user-body">
                         <Spin spinning={loading}>
                             <div className="table-responsive" style={{ maxHeight: "400px" }}>
-                                <table className="table table-bordered table-hover">
-                                    <thead>
-                                    <tr className="text-center">
+                                <table className="table table-striped table-hover">
+                                    <thead className="sticky-top">
+                                    <tr className="text-center table-primary">
                                         <th scope="col">No</th>
                                         <th scope="col">Id</th>
                                         <th scope="col">Email</th>
@@ -159,29 +168,40 @@ const Users = (props) => {
                     </div>
 
                     {totalPage > 0 &&
-                        <div className="user-footer row justify-content-center">
-                            <div className="col-auto">
-                                <ReactPaginate
-                                    nextLabel="Next"
-                                    onPageChange={handlePageClick}
-                                    pageRangeDisplayed={3}
-                                    marginPagesDisplayed={2}
-                                    pageCount={totalPage}
-                                    previousLabel="Prev"
-                                    pageClassName="page-item"
-                                    pageLinkClassName="page-link"
-                                    previousClassName="page-item"
-                                    previousLinkClassName="page-link"
-                                    nextClassName="page-item"
-                                    nextLinkClassName="page-link"
-                                    breakLabel="..."
-                                    breakClassName="page-item"
-                                    breakLinkClassName="page-link"
-                                    containerClassName="pagination"
-                                    activeClassName="active"
-                                    renderOnZeroPageCount={null}
-                                    forcePage={currentPage - 1}
-                                />
+                        <div className="user-footer row mt-4">
+                            <div className="col d-flex justify-content-end align-items-center">
+                                <div className="me-3">
+                                    <ReactPaginate
+                                        nextLabel="Next"
+                                        onPageChange={handlePageClick}
+                                        pageRangeDisplayed={3}
+                                        marginPagesDisplayed={2}
+                                        pageCount={totalPage}
+                                        previousLabel="Prev"
+                                        pageClassName="page-item"
+                                        pageLinkClassName="page-link"
+                                        previousClassName="page-item"
+                                        previousLinkClassName="page-link"
+                                        nextClassName="page-item"
+                                        nextLinkClassName="page-link"
+                                        breakLabel="..."
+                                        breakClassName="page-item"
+                                        breakLinkClassName="page-link"
+                                        containerClassName="pagination"
+                                        activeClassName="active"
+                                        renderOnZeroPageCount={null}
+                                        forcePage={currentPage - 1}
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <select className="form-select" aria-label="Default select example"
+                                        onChange={(e) => handleShowRows(e.target.value)}
+                                            value={numRows}>
+                                        <option value={2}>Show 2</option>
+                                        <option value={4}>Show 4</option>
+                                        <option value={6}>Show 6</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     }
@@ -193,6 +213,7 @@ const Users = (props) => {
                 handleCloseModalDelete={handleCloseModalDelete}
                 dataDelete={dataDelete}
                 fetchUsers={fetchUsers}
+                numRows={numRows}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
             />
@@ -201,6 +222,7 @@ const Users = (props) => {
                 isShowModalUser={isShowModalUser}
                 handleCloseModalUser={handleCloseModalUser}
                 fetchUsers={fetchUsers}
+                numRows={numRows}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 actionModalUser={actionModalUser}

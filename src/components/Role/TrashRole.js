@@ -112,9 +112,9 @@ const TrashRole = (props) => {
                             onClick={() => onRestoreManyRoles(selectedIds)}>Restore All</button>
                 }
                 <div className="table-responsive" style={{ maxHeight: "400px" }}>
-                    <table className="table table-bordered table-hover">
-                        <thead>
-                        <tr className="text-center">
+                    <table className="table table-striped table-hover">
+                        <thead className="sticky-top">
+                        <tr className="text-center table-primary">
                             <th scope="col">
                                 <input
                                     type="checkbox"

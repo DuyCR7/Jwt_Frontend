@@ -128,9 +128,9 @@ const TableRole = forwardRef((props, ref) => {
                     <button className="btn btn-sm btn-danger mb-3" onClick={() => handelDeleteManyRoles(selectedIds)}>Delete All</button>
                 }
                 <div className="table-responsive" style={{ maxHeight: "400px" }}>
-                    <table className="table table-bordered table-hover">
-                    <thead>
-                    <tr className="text-center">
+                    <table className="table table-striped table-hover">
+                    <thead className="sticky-top">
+                    <tr className="text-center table-primary">
                         <th scope="col">
                             <input
                                 type="checkbox"
@@ -194,7 +194,7 @@ const TableRole = forwardRef((props, ref) => {
             </Spin>
 
             {totalPage > 0 &&
-                <div className="user-footer row justify-content-center">
+                <div className="user-footer row justify-content-end mt-4">
                     <div className="col-auto">
                         <ReactPaginate
                             nextLabel="Next"

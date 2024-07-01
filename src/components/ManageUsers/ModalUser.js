@@ -78,9 +78,9 @@ const ModalUser = (props) => {
 
                     if(props.actionModalUser === "CREATE"){
                         props.setCurrentPage(1);
-                        await props.fetchUsers(1);
+                        await props.fetchUsers(1, props.numRows);
                     } else {
-                        await props.fetchUsers(props.currentPage);
+                        await props.fetchUsers(props.currentPage, props.numRows);
                     }
 
                 } else {
