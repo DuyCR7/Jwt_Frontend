@@ -80,7 +80,7 @@ const ModalUser = (props) => {
                         props.setCurrentPage(1);
                         await props.fetchUsers(1, props.numRows);
                     } else {
-                        await props.fetchUsers(props.currentPage, props.numRows);
+                        await props.fetchUsers(props.currentPage, props.numRows, props.searchKeyword, props.sortConfig);
                     }
 
                 } else {

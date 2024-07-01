@@ -14,6 +14,7 @@ const ModalDelete = (props) => {
     const confirmDeleteUser = async () => {
         if (user.account.id === props.dataDelete.id) {
             toast.error("You can't delete your account!");
+            props.handleCloseModalDelete();
             return;
         } else {
             setLoading(true);

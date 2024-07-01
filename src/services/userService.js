@@ -13,8 +13,19 @@ const loginUser = (valueLogin, password) => {
     });
 }
 
-const fetchAllUsers = (page, limit) => {
-    return axios.get(`/api/v1/user/read?page=${page}&limit=${limit}`);
+const fetchAllUsers = (page, limit, search = "", sort = {}) => {
+    let query = `/api/v1/user/read?page=${page}&limit=${limit}`;
+
+    if (search) {
+        query += `&search=${encodeURIComponent(search)}`;
+    }
+
+    if (sort && sort.key && sort.direction) {
+        const sortQuery = JSON.stringify(sort);
+        query += `&sort=${encodeURIComponent(sortQuery)}`;
+    }
+
+    return axios.get(query);
 }
 
 const deleteUser = (user) => {

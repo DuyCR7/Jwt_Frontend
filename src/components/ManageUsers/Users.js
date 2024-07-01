@@ -5,7 +5,6 @@ import ReactPaginate from 'react-paginate';
 import ModalDelete from "./ModalDelete";
 import ModalUser from "./ModalUser";
 import { Spin } from 'antd';
-import {value} from "lodash/seq";
 
 const Users = (props) => {
 
@@ -24,6 +23,9 @@ const Users = (props) => {
 
     const [numRows, setNumRows] = useState(2);
 
+    const [searchKeyword, setSearchKeyword] = useState("");
+    const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'ASC' });
+
     const handleCloseModalDelete = () => {
         setIsShowModalDelete(false);
         setDataDelete({});
@@ -35,13 +37,13 @@ const Users = (props) => {
     }
 
     useEffect(() => {
-        fetchUsers(currentPage, numRows);
-    }, [currentPage, numRows]);
+        fetchUsers(currentPage, numRows, searchKeyword, sortConfig);
+    }, [currentPage, numRows, searchKeyword, sortConfig]);
 
-    const fetchUsers = async (currentPage, numRows) => {
+    const fetchUsers = async (currentPage, numRows, searchKeyword = "", sortConfig = { key: 'id', direction: 'ASC' }) => {
         setLoading(true);
         try {
-            let res = await fetchAllUsers(currentPage, numRows);
+            let res = await fetchAllUsers(currentPage, numRows, searchKeyword, sortConfig);
             if (res && res.EC === 0) {
                 setTotalPage(res.DT.totalPages);
                 setListUsers(res.DT.users);
@@ -72,11 +74,21 @@ const Users = (props) => {
 
     const handleRefresh = async () => {
         setCurrentPage(1);
+        setSearchKeyword("");
+        setSortConfig({ key: 'id', direction: 'ASC' });
     }
 
     const handleShowRows = async (numRows) => {
         setNumRows(numRows);
         setCurrentPage(1);
+    }
+
+    const handleSort = (key) => {
+        let direction = 'ASC';
+        if (sortConfig.key === key && sortConfig.direction === 'ASC') {
+            direction = 'DESC';
+        }
+        setSortConfig({ key, direction });
     }
 
     return (
@@ -104,18 +116,27 @@ const Users = (props) => {
                                 Add new user
                             </button>
                         </div>
+                        <div className="search-bar mb-3">
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter Email..."
+                                value={searchKeyword}
+                                onChange={(e) => setSearchKeyword(e.target.value)}
+                            />
+                        </div>
                     </div>
 
                     <div className="user-body">
                         <Spin spinning={loading}>
-                            <div className="table-responsive" style={{ maxHeight: "400px" }}>
+                            <div className="table-responsive" style={{maxHeight: "400px"}}>
                                 <table className="table table-striped table-hover">
                                     <thead className="sticky-top">
                                     <tr className="text-center table-primary">
                                         <th scope="col">No</th>
-                                        <th scope="col">Id</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Username</th>
+                                        <th scope="col" style={{cursor: "pointer"}} onClick={() => handleSort('id')}>Id</th>
+                                        <th scope="col" style={{cursor: "pointer"}} onClick={() => handleSort('email')}>Email</th>
+                                        <th scope="col" style={{cursor: "pointer"}} onClick={() => handleSort('username')}>Username</th>
                                         <th scope="col">Group</th>
                                         <th scope="col">Actions</th>
                                     </tr>
@@ -219,6 +240,8 @@ const Users = (props) => {
                 fetchUsers={fetchUsers}
                 numRows={numRows}
                 currentPage={currentPage}
+                searchKeyword={searchKeyword}
+                sortConfig={sortConfig}
                 setCurrentPage={setCurrentPage}
                 actionModalUser={actionModalUser}
                 dataUpdate={dataUpdate}
