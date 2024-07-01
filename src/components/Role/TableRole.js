@@ -8,7 +8,7 @@ import { Spin } from "antd";
 const TableRole = forwardRef((props, ref) => {
 
     const [listRoles, setListRoles] = useState([]);
-    const LIMIT_ROLE = 4;
+    const LIMIT_ROLE = 8;
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -127,7 +127,7 @@ const TableRole = forwardRef((props, ref) => {
                     selectedIds.length > 0 &&
                     <button className="btn btn-sm btn-danger mb-3" onClick={() => handelDeleteManyRoles(selectedIds)}>Delete All</button>
                 }
-                <div className="table-responsive">
+                <div className="table-responsive" style={{ maxHeight: "400px" }}>
                     <table className="table table-bordered table-hover">
                     <thead>
                     <tr className="text-center">

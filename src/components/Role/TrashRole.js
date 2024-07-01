@@ -111,7 +111,7 @@ const TrashRole = (props) => {
                     <button className="btn btn-sm btn-warning mb-3"
                             onClick={() => onRestoreManyRoles(selectedIds)}>Restore All</button>
                 }
-                <div className="table-responsive">
+                <div className="table-responsive" style={{ maxHeight: "400px" }}>
                     <table className="table table-bordered table-hover">
                         <thead>
                         <tr className="text-center">

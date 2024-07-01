@@ -8,7 +8,7 @@ import { Spin } from 'antd';
 
 const Users = (props) => {
 
-    const LIMIT_USER = 4;
+    const LIMIT_USER = 8;
 
     const [listUsers, setListUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -103,7 +103,7 @@ const Users = (props) => {
 
                     <div className="user-body">
                         <Spin spinning={loading}>
-                            <div className="table-responsive">
+                            <div className="table-responsive" style={{ maxHeight: "400px" }}>
                                 <table className="table table-bordered table-hover">
                                     <thead>
                                     <tr className="text-center">
