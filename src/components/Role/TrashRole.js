@@ -130,7 +130,7 @@ const TrashRole = (props) => {
                         </tr>
                         </thead>
                         <tbody>
-                        {listTrash && listTrash.length > 0 ?
+                        {getFilteredRoles() && getFilteredRoles().length > 0 ?
                             <>
                                 {getFilteredRoles().map((item, index) => {
                                     return (
@@ -162,7 +162,7 @@ const TrashRole = (props) => {
                             :
                             <>
                                 <tr>
-                                    <td colSpan={6}>Trash empty!</td>
+                                    <td colSpan={6}>No rows found!</td>
                                 </tr>
                             </>
                         }
