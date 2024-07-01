@@ -9,8 +9,6 @@ import {value} from "lodash/seq";
 
 const Users = (props) => {
 
-    const LIMIT_USER = 8;
-
     const [listUsers, setListUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
@@ -24,7 +22,7 @@ const Users = (props) => {
 
     const [actionModalUser, setActionModalUser] = useState("CREATE");
 
-    const [numRows, setNumRows] = useState(10);
+    const [numRows, setNumRows] = useState(2);
 
     const handleCloseModalDelete = () => {
         setIsShowModalDelete(false);
@@ -74,13 +72,11 @@ const Users = (props) => {
 
     const handleRefresh = async () => {
         setCurrentPage(1);
-        await fetchUsers(currentPage, numRows);
     }
 
     const handleShowRows = async (numRows) => {
         setNumRows(numRows);
         setCurrentPage(1);
-        await fetchUsers(currentPage, numRows);
     }
 
     return (
@@ -128,10 +124,9 @@ const Users = (props) => {
                                     {listUsers && listUsers.length > 0 ?
                                         <>
                                             {listUsers.map((item, index) => {
-                                                const globalIndex = (currentPage - 1) * LIMIT_USER + index + 1;
                                                 return (
                                                     <tr className="text-center" key={`row-${index}`}>
-                                                        <th scope="row">{globalIndex}</th>
+                                                        <th scope="row">{(currentPage - 1) * numRows + index + 1}</th>
                                                         <td>{item.id}</td>
                                                         <td>{item.email}</td>
                                                         <td>{item.username}</td>
