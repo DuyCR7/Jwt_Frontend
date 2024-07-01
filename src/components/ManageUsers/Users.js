@@ -134,9 +134,33 @@ const Users = (props) => {
                                     <thead className="sticky-top">
                                     <tr className="text-center table-primary">
                                         <th scope="col">No</th>
-                                        <th scope="col" style={{cursor: "pointer"}} onClick={() => handleSort('id')}>Id</th>
-                                        <th scope="col" style={{cursor: "pointer"}} onClick={() => handleSort('email')}>Email</th>
-                                        <th scope="col" style={{cursor: "pointer"}} onClick={() => handleSort('username')}>Username</th>
+                                        <th scope="col" style={{cursor: "pointer"}} onClick={() => handleSort('id')}>
+                                            <span className="me-1">Id</span>
+                                            {sortConfig && sortConfig.key === 'id' && sortConfig.direction === 'ASC' &&
+                                                <i className="fa fa-sort-numeric-desc" style={{color: "red"}}></i>
+                                            }
+                                            {sortConfig && sortConfig.key === 'id' && sortConfig.direction === 'DESC' &&
+                                                <i className="fa fa-sort-numeric-asc" style={{color: "red"}}></i>
+                                            }
+                                        </th>
+                                        <th scope="col" style={{cursor: "pointer"}} onClick={() => handleSort('email')}>
+                                            <span className="me-1">Email</span>
+                                            {sortConfig && sortConfig.key === 'email' && sortConfig.direction === 'ASC' &&
+                                                <i className="fa fa-sort-alpha-desc" style={{color: "red"}}></i>
+                                            }
+                                            {sortConfig && sortConfig.key === 'email' && sortConfig.direction === 'DESC' &&
+                                                <i className="fa fa-sort-alpha-asc" style={{color: "red"}}></i>
+                                            }
+                                        </th>
+                                        <th scope="col" style={{cursor: "pointer"}} onClick={() => handleSort('username')}>
+                                            <span className="me-1">Username</span>
+                                            {sortConfig && sortConfig.key === 'username' && sortConfig.direction === 'ASC' &&
+                                                <i className="fa fa-sort-alpha-desc" style={{color: "red"}}></i>
+                                            }
+                                            {sortConfig && sortConfig.key === 'username' && sortConfig.direction === 'DESC' &&
+                                                <i className="fa fa-sort-alpha-asc" style={{color: "red"}}></i>
+                                            }
+                                        </th>
                                         <th scope="col">Group</th>
                                         <th scope="col">Actions</th>
                                     </tr>
