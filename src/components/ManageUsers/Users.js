@@ -83,6 +83,11 @@ const Users = (props) => {
         setCurrentPage(1);
     }
 
+    const handleSearch = (e) => {
+        setSearchKeyword(e.target.value);
+        setCurrentPage(1);
+    }
+
     const handleSort = (key) => {
         let direction = 'ASC';
         if (sortConfig.key === key && sortConfig.direction === 'ASC') {
@@ -122,7 +127,7 @@ const Users = (props) => {
                                 className="form-control"
                                 placeholder="Enter Email..."
                                 value={searchKeyword}
-                                onChange={(e) => setSearchKeyword(e.target.value)}
+                                onChange={(e) => handleSearch(e)}
                             />
                         </div>
                     </div>
