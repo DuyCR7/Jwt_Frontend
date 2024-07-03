@@ -8,11 +8,14 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { logoutUser } from "../../services/userService";
 import {toast} from "react-toastify";
+import Lightbox from "react-18-image-lightbox";
 
 const NavHeader = (props) => {
     const { user, logoutContext } = useContext(UserContext);
     const location = useLocation();
     const history = useHistory();
+
+    const [isPreviewImage, setIsPreviewImage] = useState(false);
 
     const handleLogout = async () => {
         try {
@@ -66,7 +69,9 @@ const NavHeader = (props) => {
                                                 <Nav.Item className="nav-link">
                                                     Welcome <b>{user.account.username}!</b>
                                                 </Nav.Item>
-                                                <img src={user.account.image} width={40} height={40} className="rounded-circle"/>
+                                                <img src={user.account.image} width={40} height={40} className="rounded-circle"
+                                                     style={{cursor: 'pointer'}}
+                                                     onClick={() => setIsPreviewImage(true)}/>
                                                 <NavDropdown title="Settings" id="basic-nav-dropdown">
                                                     <NavDropdown.Item onClick={handleLinkClick}>Change Password</NavDropdown.Item>
                                                     <NavDropdown.Divider />
@@ -86,6 +91,13 @@ const NavHeader = (props) => {
                         </Navbar>
                     </div>
                 </div>
+                {isPreviewImage === true && (
+                    <Lightbox
+                        mainSrc={user.account.image}
+                        imageTitle={"Avatar"}
+                        onCloseRequest={() => setIsPreviewImage(false)}
+                    />
+                )}
             </>
         );
     } else {

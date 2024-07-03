@@ -5,6 +5,8 @@ import ReactPaginate from 'react-paginate';
 import ModalDelete from "./ModalDelete";
 import ModalUser from "./ModalUser";
 import { Spin } from 'antd';
+import _ from "lodash";
+import Lightbox from "react-18-image-lightbox";
 
 const Users = (props) => {
 
@@ -25,6 +27,12 @@ const Users = (props) => {
 
     const [searchKeyword, setSearchKeyword] = useState("");
     const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'DESC' });
+
+    const [isPreviewImage, setIsPreviewImage] = useState(false);
+    const [dataImagePreview, setDataImagePreview] = useState({
+        title: '',
+        url: '',
+    });
 
     const handleCloseModalDelete = () => {
         setIsShowModalDelete(false);
@@ -96,6 +104,20 @@ const Users = (props) => {
         setSortConfig({ key, direction });
     }
 
+    const handlePreviewImage = (userId) => {
+        let listUsersClone = _.cloneDeep(listUsers);
+        let index = listUsersClone.findIndex(
+            (user) => user.id === userId
+        );
+        if (index > -1) {
+            setDataImagePreview({
+                id: `User: ${listUsersClone[index].id}`,
+                url: `data:image/jpeg;base64,${listUsersClone[index].image}`,
+            });
+            setIsPreviewImage(true);
+        }
+    }
+
     return (
         <>
             <div className="container">
@@ -136,7 +158,7 @@ const Users = (props) => {
                         <Spin spinning={loading}>
                             <div className="table-responsive" style={{maxHeight: "400px"}}>
                                 <table className="table table-striped table-hover">
-                                    <thead className="sticky-top">
+                                    <thead className="on-top">
                                     <tr className="text-center table-primary">
                                         <th scope="col">No</th>
                                         <th scope="col" style={{cursor: "pointer"}} onClick={() => handleSort('id')}>
@@ -181,7 +203,11 @@ const Users = (props) => {
                                                         <td>{item.id}</td>
                                                         <td>{item.email}</td>
                                                         <td>{item.username}</td>
-                                                        <td><img src={`data:image/jpeg;base64,${item.image}`} width={50} height={50} className="rounded-circle"/></td>
+                                                        <td>
+                                                            <img src={`data:image/jpeg;base64,${item.image}`} width={50} height={50} className="rounded-circle"
+                                                                 style={{cursor: 'pointer'}}
+                                                                 onClick={() => handlePreviewImage(item.id)}/>
+                                                        </td>
                                                         <td>{item.Group ? item.Group.name : ""}</td>
                                                         <td>
                                                             <div className="d-flex justify-content-center">
@@ -278,6 +304,14 @@ const Users = (props) => {
                 actionModalUser={actionModalUser}
                 dataUpdate={dataUpdate}
             />
+
+            {isPreviewImage === true && (
+                <Lightbox
+                    mainSrc={dataImagePreview.url}
+                    imageTitle={dataImagePreview.id}
+                    onCloseRequest={() => setIsPreviewImage(false)}
+                />
+            )}
         </>
     )
 }
