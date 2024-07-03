@@ -36,12 +36,35 @@ const fetchGroup = () => {
     return axios.get("/api/v1/group/read");
 }
 
-const createUser = (data) => {
-    return axios.post("/api/v1/user/create", {...data});
+// const createUser = (data) => {
+//     return axios.post("/api/v1/user/create", {...data});
+// }
+
+const createUser = (email, password, username, phone, image) => {
+    const data = new FormData();
+    data.append("email", email);
+    data.append("password", password);
+    data.append("username", username);
+    data.append("phone", phone);
+    data.append("image", image);
+
+    return axios.post("/api/v1/user/create", data);
 }
 
-const updateUser = (data) => {
-    return axios.put("/api/v1/user/update", {...data});
+// const updateUser = (data) => {
+//     return axios.put("/api/v1/user/update", {...data});
+// }
+
+const updateUser = (id, username, address, sex, groupId, image) => {
+    const data = new FormData();
+    data.append("id", id);
+    data.append("username", username);
+    data.append("address", address);
+    data.append("sex", sex);
+    data.append("groupId", groupId);
+    data.append("image", image);
+
+    return axios.put("/api/v1/user/update", data);
 }
 
 const getUserAccount = () => {

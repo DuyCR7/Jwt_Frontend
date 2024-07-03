@@ -31,11 +31,13 @@ const UserProvider = ({ children }) => {
                 let email = res.DT.email;
                 // let username = res.DT.username;
                 let username = "";
+                let image = "";
                 let token = res.DT.access_token;
                 let id = res.DT.id;
                 let userFetch = await getUserById(id);
                 if (userFetch && userFetch.EC === 0){
                     username = userFetch.DT.username;
+                    image = `data:image/jpeg;base64,${userFetch.DT.image}`;
                 } else {
                     username = res.DT.username;
                 }
@@ -48,6 +50,7 @@ const UserProvider = ({ children }) => {
                         groupWithRoles,
                         email,
                         username,
+                        image,
                         isLoading: false
                     }
                 }

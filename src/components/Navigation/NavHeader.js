@@ -66,6 +66,7 @@ const NavHeader = (props) => {
                                                 <Nav.Item className="nav-link">
                                                     Welcome <b>{user.account.username}!</b>
                                                 </Nav.Item>
+                                                <img src={user.account.image} width={40} height={40} className="rounded-circle"/>
                                                 <NavDropdown title="Settings" id="basic-nav-dropdown">
                                                     <NavDropdown.Item onClick={handleLinkClick}>Change Password</NavDropdown.Item>
                                                     <NavDropdown.Divider />

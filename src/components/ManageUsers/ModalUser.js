@@ -11,6 +11,8 @@ const ModalUser = (props) => {
 
     const [userGroup, setUserGroup] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [image, setImage] = useState("");
+    const [previewImage, setPreviewImage] = useState("");
 
     const defaultUserData = {
         email: "",
@@ -19,7 +21,7 @@ const ModalUser = (props) => {
         password: "",
         sex: "Male",
         address: "",
-        groupId: ""
+        groupId: "",
     }
     const [userData, setUserData] = useState(defaultUserData);
 
@@ -29,6 +31,17 @@ const ModalUser = (props) => {
         setUserData(_userData);
     }
 
+    const handleUpLoadImage = (e) => {
+        let _userData = _.cloneDeep(userData);
+
+        if (e.target && e.target.files && e.target.files[0]) {
+            setImage(e.target.files[0]);
+            setPreviewImage(URL.createObjectURL(e.target.files[0]));
+            _userData.image = e.target.files[0];
+            setUserData(_userData);
+        }
+    }
+
     const defaultValidInput = {
         email: true,
         phone: true,
@@ -36,7 +49,8 @@ const ModalUser = (props) => {
         password: true,
         sex: true,
         address: true,
-        groupId: true
+        groupId: true,
+        image: true,
     }
 
     const [objCheckInput, setObjCheckInput] = useState(defaultValidInput);
@@ -45,7 +59,7 @@ const ModalUser = (props) => {
         if(props.actionModalUser === "UPDATE") return true;
 
         setObjCheckInput(defaultValidInput);
-        let arr = ['email', 'phone', 'password', 'groupId'];
+        let arr = ['email', 'phone', 'password', 'groupId', 'image'];
         let check = true;
         for (let i = 0; i < arr.length; i++) {
             if(!userData[arr[i]]){
@@ -67,17 +81,20 @@ const ModalUser = (props) => {
             setLoading(true);
             try {
                 let res = props.actionModalUser === "CREATE" ?
-                    await createUser(userData)
+                    await createUser(userData.email, userData.password, userData.username, userData.phone, image)
                     :
-                    await updateUser(userData);
+                    await updateUser(userData.id, userData.username, userData.address, userData.sex, userData.groupId, image);
 
                 if (res && res.EC === 0) {
                     props.handleCloseModalUser();
                     setUserData({...defaultUserData, groupId: userGroup[0].id});
+                    setImage("");
+                    setPreviewImage("");
                     toast.success(res.EM);
 
                     if(props.actionModalUser === "CREATE"){
                         props.setCurrentPage(1);
+                        props.setSortConfig({ key: 'id', direction: 'DESC' });
                         await props.fetchUsers(1, props.numRows);
                     } else {
                         await props.fetchUsers(props.currentPage, props.numRows, props.searchKeyword, props.sortConfig);
@@ -105,7 +122,13 @@ const ModalUser = (props) => {
     useEffect(() => {
         if(props.actionModalUser === "UPDATE"){
             // console.log(props.dataUpdate);
-            setUserData({...props.dataUpdate, groupId: props.dataUpdate.Group ? props.dataUpdate.Group.id : userGroup[0].id});
+            setUserData({...props.dataUpdate,
+                sex: props.dataUpdate.sex ? props.dataUpdate.sex: "Male",
+                address: props.dataUpdate.address? props.dataUpdate.address : "",
+                groupId: props.dataUpdate.Group ? props.dataUpdate.Group.id : userGroup[0].id});
+
+            const imageData = props.dataUpdate.image ? `data:image/jpeg;base64,${props.dataUpdate.image}` : "";
+            setPreviewImage(imageData);
         }
     }, [props.dataUpdate]);
 
@@ -138,6 +161,8 @@ const ModalUser = (props) => {
         props.handleCloseModalUser();
         setObjCheckInput(defaultValidInput);
         setUserData({...defaultUserData, groupId: userGroup[0].id});
+        setImage("");
+        setPreviewImage("");
     }
 
     return (
@@ -155,14 +180,16 @@ const ModalUser = (props) => {
                     <div className="content-body row">
                         <div className="col-12 col-sm-6 form-group">
                             <label>Email (<span className="red">*</span>):</label>
-                            <input type="email" className={objCheckInput.email ? "form-control" : "form-control is-invalid"}
+                            <input type="email"
+                                   className={objCheckInput.email ? "form-control" : "form-control is-invalid"}
                                    value={userData.email || ""}
                                    onChange={(e) => handleOnChangeInput(e.target.value, "email")}
-                                   disabled={props.actionModalUser === "CREATE" ? false : true} />
+                                   disabled={props.actionModalUser === "CREATE" ? false : true}/>
                         </div>
                         <div className="col-12 col-sm-6 form-group">
                             <label>Phone (<span className="red">*</span>):</label>
-                            <input type="text" className={objCheckInput.phone ? "form-control" : "form-control is-invalid"}
+                            <input type="text"
+                                   className={objCheckInput.phone ? "form-control" : "form-control is-invalid"}
                                    value={userData.phone || ""}
                                    onChange={(e) => handleOnChangeInput(e.target.value, "phone")}
                                    disabled={props.actionModalUser === "CREATE" ? false : true}/>
@@ -177,7 +204,8 @@ const ModalUser = (props) => {
                             {props.actionModalUser === "CREATE" &&
                                 <>
                                     <label>Password (<span className="red">*</span>):</label>
-                                    <input type="password" className={objCheckInput.password ? "form-control" : "form-control is-invalid"}
+                                    <input type="password"
+                                           className={objCheckInput.password ? "form-control" : "form-control is-invalid"}
                                            value={userData.password || ""}
                                            onChange={(e) => handleOnChangeInput(e.target.value, "password")}/>
                                 </>
@@ -195,33 +223,45 @@ const ModalUser = (props) => {
                         </div>
                         <div className="col-12 col-sm-6 form-group">
                             <label>Group (<span className="red">*</span>):</label>
-                            <select className={objCheckInput.groupId ? "form-select" : "form-select is-invalid"} aria-label="Default select example"
+                            <select className={objCheckInput.groupId ? "form-select" : "form-select is-invalid"}
+                                    aria-label="Default select example"
                                     onChange={(e) => handleOnChangeInput(e.target.value, "groupId")}
                                     value={userData.groupId || ""}>
                                 {userGroup.length > 0 &&
-                                userGroup.map((item, index) => {
-                                    return (
-                                        <option key={`group-${index}`} value={item.id}>{item.name}</option>
-                                    )
-                                })}
+                                    userGroup.map((item, index) => {
+                                        return (
+                                            <option key={`group-${index}`} value={item.id}>{item.name}</option>
+                                        )
+                                    })}
                             </select>
                         </div>
-                        <div className="col-12 col-sm-12 form-group">
+                        <div className="col-12 col-sm-6 form-group">
                             <label>Address:</label>
                             <input type="text" className="form-control"
                                    value={userData.address || ""}
                                    onChange={(e) => handleOnChangeInput(e.target.value, "address")}/>
                         </div>
+                        <div className="col-12 col-sm-6 form-group">
+                            <label>Image (<span className="red">*</span>):</label>
+                            <input type="file" className="form-control"
+                                   onChange={(e) => handleUpLoadImage(e)}/>
+                        </div>
+                        {previewImage === "" || previewImage === null ? ""
+                            :
+                            <div className="col-12 col-sm-12 form-group mt-3 text-center">
+                                <img src={previewImage} width={110} height={110}/>
+                            </div>
+                        }
                     </div>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => handleClickCloseModal()}>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => handleClickCloseModal()}>
                         Close
-                    </Button>
-                    <Button variant="primary" onClick={() => handleSubmit()}>
-                        Save
-                    </Button>
-                </Modal.Footer>
+                        </Button>
+                        <Button variant="primary" onClick={() => handleSubmit()}>
+                            Save
+                        </Button>
+                    </Modal.Footer>
                 </Spin>
             </Modal>
         </>

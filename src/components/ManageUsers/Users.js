@@ -21,10 +21,10 @@ const Users = (props) => {
 
     const [actionModalUser, setActionModalUser] = useState("CREATE");
 
-    const [numRows, setNumRows] = useState(2);
+    const [numRows, setNumRows] = useState(5);
 
     const [searchKeyword, setSearchKeyword] = useState("");
-    const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'ASC' });
+    const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'DESC' });
 
     const handleCloseModalDelete = () => {
         setIsShowModalDelete(false);
@@ -40,7 +40,7 @@ const Users = (props) => {
         fetchUsers(currentPage, numRows, searchKeyword, sortConfig);
     }, [currentPage, numRows, searchKeyword, sortConfig]);
 
-    const fetchUsers = async (currentPage, numRows, searchKeyword = "", sortConfig = { key: 'id', direction: 'ASC' }) => {
+    const fetchUsers = async (currentPage, numRows, searchKeyword = "", sortConfig = { key: 'id', direction: 'DESC' }) => {
         setLoading(true);
         try {
             let res = await fetchAllUsers(currentPage, numRows, searchKeyword, sortConfig);
@@ -75,7 +75,7 @@ const Users = (props) => {
     const handleRefresh = async () => {
         setCurrentPage(1);
         setSearchKeyword("");
-        setSortConfig({ key: 'id', direction: 'ASC' });
+        setSortConfig({ key: 'id', direction: 'DESC' });
     }
 
     const handleShowRows = async (numRows) => {
@@ -89,9 +89,9 @@ const Users = (props) => {
     }
 
     const handleSort = (key) => {
-        let direction = 'ASC';
-        if (sortConfig.key === key && sortConfig.direction === 'ASC') {
-            direction = 'DESC';
+        let direction = 'DESC';
+        if (sortConfig.key === key && sortConfig.direction === 'DESC') {
+            direction = 'ASC';
         }
         setSortConfig({ key, direction });
     }
@@ -166,6 +166,7 @@ const Users = (props) => {
                                                 <i className="fa fa-sort-alpha-asc" style={{color: "red"}}></i>
                                             }
                                         </th>
+                                        <th scope="col">Image</th>
                                         <th scope="col">Group</th>
                                         <th scope="col">Actions</th>
                                     </tr>
@@ -180,6 +181,7 @@ const Users = (props) => {
                                                         <td>{item.id}</td>
                                                         <td>{item.email}</td>
                                                         <td>{item.username}</td>
+                                                        <td><img src={`data:image/jpeg;base64,${item.image}`} width={50} height={50} className="rounded-circle"/></td>
                                                         <td>{item.Group ? item.Group.name : ""}</td>
                                                         <td>
                                                             <div className="d-flex justify-content-center">
@@ -242,9 +244,9 @@ const Users = (props) => {
                                     <select className="form-select" aria-label="Default select example"
                                         onChange={(e) => handleShowRows(e.target.value)}
                                             value={numRows}>
-                                        <option value={2}>Show 2</option>
-                                        <option value={4}>Show 4</option>
-                                        <option value={6}>Show 6</option>
+                                        <option value={5}>Show 5</option>
+                                        <option value={10}>Show 10</option>
+                                        <option value={15}>Show 15</option>
                                     </select>
                                 </div>
                             </div>
@@ -271,6 +273,7 @@ const Users = (props) => {
                 currentPage={currentPage}
                 searchKeyword={searchKeyword}
                 sortConfig={sortConfig}
+                setSortConfig={setSortConfig}
                 setCurrentPage={setCurrentPage}
                 actionModalUser={actionModalUser}
                 dataUpdate={dataUpdate}

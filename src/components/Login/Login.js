@@ -47,7 +47,8 @@ const Login = (props) => {
           let groupWithRoles = res.DT.groupWithRoles;
           let email = res.DT.email;
           let username = res.DT.username;
-          let token = res.DT.access_token
+          let token = res.DT.access_token;
+          let image = `data:image/jpeg;base64,${res.DT.image}`;
 
           let data = {
             isAuthenticated: true,
@@ -55,7 +56,8 @@ const Login = (props) => {
             account: {
               groupWithRoles,
               email,
-              username
+              username,
+              image
             }
           }
 
