@@ -23,6 +23,20 @@ const UserProvider = ({ children }) => {
         setUser({...userDefault, isLoading: false});
     };
 
+    const updateUserContext = (updatedUser) => {
+        setUser((prevUser) => ({
+            ...prevUser,
+            account: {
+                ...prevUser.account,
+                username: updatedUser.username,
+                sex: updatedUser.sex,
+                address: updatedUser.address,
+                groupId: updatedUser.groupId,
+                image: `data:image/jpeg;base64,${updatedUser.image}`,
+            },
+        }));
+    };
+
     const fetchUser = async () => {
         try {
             let res = await getUserAccount();
@@ -73,7 +87,7 @@ const UserProvider = ({ children }) => {
     }, []);
 
     return (
-        <UserContext.Provider value={{ user, loginContext, logoutContext }}>
+        <UserContext.Provider value={{ user, loginContext, logoutContext, updateUserContext }}>
             {children}
         </UserContext.Provider>
     );

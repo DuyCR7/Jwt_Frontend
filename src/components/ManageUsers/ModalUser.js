@@ -1,13 +1,16 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useState, useEffect } from "react";
+import {useState, useEffect, useContext} from "react";
 import "./Users.scss";
 import {fetchGroup, createUser, updateUser} from "../../services/userService";
 import {toast} from "react-toastify";
 import _ from "lodash";
 import { Spin } from 'antd';
+import {UserContext} from "../../context/UserContext";
 
 const ModalUser = (props) => {
+
+    const { updateUserContext } = useContext(UserContext);
 
     const [userGroup, setUserGroup] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -98,6 +101,8 @@ const ModalUser = (props) => {
                         await props.fetchUsers(1, props.numRows);
                     } else {
                         await props.fetchUsers(props.currentPage, props.numRows, props.searchKeyword, props.sortConfig);
+
+                        updateUserContext(res.DT);
                     }
 
                 } else {
