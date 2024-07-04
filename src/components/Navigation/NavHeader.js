@@ -40,6 +40,7 @@ const NavHeader = (props) => {
 
     useEffect(() => {
         setNavbarExpanded(false);
+        // console.log("user", user)
     }, [user]);
 
     if(user && user.isAuthenticated === true || location.pathname === "/") {

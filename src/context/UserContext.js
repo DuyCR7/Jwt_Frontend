@@ -24,17 +24,20 @@ const UserProvider = ({ children }) => {
     };
 
     const updateUserContext = (updatedUser) => {
-        setUser((prevUser) => ({
-            ...prevUser,
-            account: {
-                ...prevUser.account,
-                username: updatedUser.username,
-                sex: updatedUser.sex,
-                address: updatedUser.address,
-                groupId: updatedUser.groupId,
-                image: `data:image/jpeg;base64,${updatedUser.image}`,
-            },
-        }));
+        setUser((prevUser) => {
+            if (prevUser.account.id === updatedUser.id) {
+                return {
+                    ...prevUser,
+                    account: {
+                        ...prevUser.account,
+                        username: updatedUser.username,
+                        image: `data:image/jpeg;base64,${updatedUser.image}`,
+                    },
+                };
+            } else {
+                return prevUser;
+            }
+        });
     };
 
     const fetchUser = async () => {

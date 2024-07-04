@@ -89,6 +89,7 @@ const ModalUser = (props) => {
                     await updateUser(userData.id, userData.username, userData.address, userData.sex, userData.groupId, image);
 
                 if (res && res.EC === 0) {
+                    // console.log(res.DT);
                     props.handleCloseModalUser();
                     setUserData({...defaultUserData, groupId: userGroup[0].id});
                     setImage("");
